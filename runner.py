@@ -20,23 +20,21 @@ def count_today():
 
 def run_ingest_once():
     # اجرای اسکریپت اصلی
+    print("→ running daily_ingest_1300.py", flush=True)
     subprocess.run(["python", "daily_ingest_1300.py"], check=True)
 
 def main():
-    tries = 3           # تا ۳ بار تلاش
-    delay = 300         # فاصله بین تلاش‌ها: ۵ دقیقه
-    for i in range(1, tries+1):
-        print(f"--- Attempt {i}/{tries} ---")
+    # برای تست: فقط یک تلاش، بدون انتظار
+    tries = 1
+    for i in range(1, tries + 1):
+        print(f"--- Attempt {i}/{tries} ---", flush=True)
         run_ingest_once()
         today, cnt = count_today()
-        print(f"[verify] Tehran today = {today} | inserted docs = {cnt}")
+        print(f"[verify] Tehran today = {today} | inserted docs = {cnt}", flush=True)
         if cnt and cnt > 0:
-            print("✅ Data present. Done.")
-            return
-        if i < tries:
-            print(f"⚠️ No data yet. Sleeping {delay}s then retry...")
-            time.sleep(delay)
-    print("❌ Finished retries with zero inserts.")
+            print("✅ Data present. Done.", flush=True)
+        else:
+            print("ℹ️ No new docs (ممکنه بازار بسته باشد).", flush=True)
 
 if __name__ == "__main__":
     main()
