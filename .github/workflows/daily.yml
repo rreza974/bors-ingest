@@ -20,11 +20,11 @@ jobs:
       - name: Install deps
         run: pip install -r requirements.txt
 
-      - name: Run
+      - name: Run (with retry)
         env:
           TOKEN: ${{ secrets.TOKEN }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
-        run: python daily_ingest_1300.py
+        run: python runner.py
 
       - name: Verify write (count today in Tehran)
         env:
