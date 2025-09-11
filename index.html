@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>اسکنر حرفه‌ای BP-20% — ML امروز + تعدیل افزایش سرمایه + RS چندلایه + پایش/بک‌تست</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#0d1117; --panel:#161b22; --card:#171e2b; --ink:#e6edf3; --muted:#8b949e; --line:#30363d;
+      --chip-border:#30363d; --accent:#238636; --accent-light:#2ea043; --ok:#3fb950; --warn:#d29922; --bad:#f85149; --info:#58a6ff;
+      --shadow-sm:0 1px 2px rgba(0,0,0,.1); --shadow-md:0 4px 8px rgba(0,0,0,.2);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'Vazirmatn',system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .wrap{max-width:1200px;margin:32px auto;padding:0 16px}
+    .header{text-align:center;margin-bottom:24px}
+    .title{font-size:clamp(22px,3.2vw,36px);font-weight:800;margin:0 0 8px;background:linear-gradient(90deg,#58a6ff,#3fb950);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .sub{color:var(--muted);font-size:14px;margin:0 0 16px}
+    .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow-md);margin-bottom:20px}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .input-group{flex:1 1 240px;display:flex;flex-direction:column;gap:6px}
+    .input-group label{font-size:12px;color:var(--muted);font-weight:700}
+    input[type=file],select,input[type=text],input[type=number]{padding:10px;background:#0f1420;border:1px solid var(--line);border-radius:8px;color:var(--ink)}
+    .btn{appearance:none;border:none;background:var(--accent);border:1px solid var(--accent);color:#fff;border-radius:8px;padding:10px 16px;cursor:pointer;font-weight:800;font-size:14px;display:inline-flex;align-items:center;gap:8px;transition:.2s}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    .btn:hover:not(:disabled){background:var(--accent-light);transform:translateY(-2px);box-shadow:0 4px 10px rgba(46,160,67,.2)}
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+    .chip{background:#0f1420;border:1px solid var(--chip-border);color:#c9d1d9;border-radius:999px;padding:4px 10px;font-size:12px}
+    .chip.ok{color:var(--ok);border-color:rgba(63,185,80,.4);background:rgba(63,185,80,.08)}
+    .chip.warn{color:var(--warn);border-color:rgba(210,153,34,.4);background:rgba(210,153,34,.08)}
+    .chip.bad{color:var(--bad);border-color:rgba(248,81,73,.4);background:rgba(248,81,73,.08)}
+    .chip.info{color:var(--info);border-color:rgba(88,166,255,.4);background:rgba(88,166,255,.08)}
+    .drop{margin-top:8px;min-height:90px;border:2px dashed var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--muted);text-align:center;padding:12px}
+    .drop.drag{border-color:var(--accent-light);color:var(--accent-light);background:rgba(46,160,67,.05)}
+    .results{margin-top:12px;display:grid;grid-template-columns:1fr;gap:16px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow-sm)}
+    .card-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+    .card-title{font-size:18px;font-weight:800;word-break:break-all}
+    .btn-toggle{background:#21262d;border-color:var(--line)}
+    .btn-toggle:hover:not(:disabled){background:#30363d;border-color:#8b949e}
+    .kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:10px 0}
+    .box{background:#0f1420;border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+    .cap{font-size:12px;color:var(--muted);margin-bottom:4px}
+    .val{font-size:22px;font-weight:800}
+    .progress{height:8px;background:#0b1630;border-radius:999px;overflow:hidden;margin-top:6px}
+    .progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-light));width:0%}
+    .tbl{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:10px}
+    .tbl th,.tbl td{padding:8px 10px;border-bottom:1px solid var(--line);font-size:13px;text-align:right;vertical-align:top}
+    .tbl th{background:#21262d;color:#c9d1d9}
+    .log{white-space:pre-wrap;background:#0f1420;border:1px solid var(--line);border-radius:8px;padding:10px;color:#cbd5e1;font-size:12px;margin-top:10px}
+    .log.ok{color:var(--ok);border-left:4px solid var(--ok)}
+    .log.warn{color:var(--warn);border-left:4px solid var(--warn)}
+    .log.bad{color:var(--bad);border-left:4px solid var(--bad)}
+    .collapsible-content{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s ease-in-out;overflow:hidden}
+    .collapsible-content > div{min-height:0}
+    .card.open .collapsible-content{grid-template-rows:1fr}
+    .advice{background:#0f1420;border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:12px}
+    .advice h3{margin:0 0 8px;font-size:14px;font-weight:800}
+    .advice ul{margin:0;padding-right:18px;font-size:13px;line-height:1.8}
+    .muted{color:var(--muted)}
+  </style>
+
+  <!-- پیکربندی پایه -->
+  <script id="scanner-config" type="application/json">
+  {
+    "lookback60": 60,
+    "focus10": 10,
+    "ma20SlopeLookback": 5,
+    "rsLookback": 50,
+    "rsiPeriod": 14,
+    "divergenceLookback": 100,
+    "profiles": {
+      "Conservative": { "cv20_max": 0.055, "volThrust_ratio_min": 1.7, "powerLast3_avg_min": 1.3, "min_tval_20": 20000000000, "min_trades_med20": 2000 },
+      "Standard":     { "cv20_max": 0.06,  "volThrust_ratio_min": 1.5, "powerLast3_avg_min": 1.2, "min_tval_20": 10000000000, "min_trades_med20": 1000 },
+      "Aggressive":   { "cv20_max": 0.07,  "volThrust_ratio_min": 1.3, "powerLast3_avg_min": 1.1, "min_tval_20": 3000000000,  "min_trades_med20": 300 }
+    },
+    "coreWeights": {
+      "rs": 3, "rsHH60": 1, "rsSlope": 1, "rsSector": 1, "cv20": 2, "maCross": 2, "powerFrac": 2,
+      "inflow3": 1, "volThrust": 1, "distHigh": 1, "breakout60": 1, "wrb": 1, "rsiDiv": 2,
+      "pocketPivot": 1, "closingStrength": 1, "nr7_or_inside": 1
+    },
+    "thresholds": {
+      "range10_ratio_max": 0.16,
+      "aboveMA20_days_min": 5,
+      "powerStrong_minDays": 2,
+      "powerStrong_level": 1.5,
+      "inflow3_sum_min": 0,
+      "distTo60High_min": -0.10,
+      "wrb_atr_mult": 1.5,
+      "nearMA20_last3_max": 0.03,
+      "inflowSpike_pct": 0.80,
+      "weeks_tight_pct": 0.03,
+      "gap_anti_chase_pct": 0.06
+    },
+    "regime": { "cv20_index_max": 0.07, "down_days_max10": 2 },
+    "risk": { "equity": 1000000000, "risk_pct": 1.0, "atr_mult": 1.0 },
+    "adaptive": true,
+    "corpActions": {
+      "enabled": true,
+      "thrDown": 0.70,
+      "thrUp": 1.40,
+      "tolOHLC": 0.06,
+      "adjustVolume": true
+    },
+    "ml": {
+      "disc_min": 70,
+      "cont_min": 60,
+      "fwd_days": 60,
+      "target_pct": 20
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <h1 class="title">اسکنر حرفه‌ای BP-20%</h1>
+      <p class="sub">
+        تعدیل خودکار «افزایش سرمایه/تقسیم» + RS چندلایه + RSI Divergence + Pocket Pivot + پایش «نخستین ورود» و «چند-نوبته» + <b>ML: احتمال +20٪ در ۶۰ روز (امروز)</b>.
+      </p>
+    </div>
+
+    <div class="panel">
+      <div class="chips">
+        <span class="chip info">ورودی شاخص کل (۱.xlsx) <b>اجباری</b> است.</span>
+        <span class="chip warn">از بین «شاخص صنعت / سهام / صندوق‌ها / صندوق‌های طلا» وجود <b>حداقل یکی</b> لازم است.</span>
+      </div>
+
+      <div class="row">
+        <div class="input-group">
+          <label>۱) فایل شاخص کل (1.xlsx)</label>
+          <input id="indexFileInput" type="file" accept=".csv,.xlsx" />
+        </div>
+        <div class="input-group">
+          <label>۲) فایل شاخص صنعت (اختیاری) (2.xlsx)</label>
+          <input id="sectorFileInput" type="file" accept=".csv,.xlsx" />
+        </div>
+        <div class="input-group">
+          <label>۳) فایل‌های سهام (3.xlsx یا مجموعه)</label>
+          <input id="stockFileInput" type="file" accept=".csv,.xlsx" multiple disabled />
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <div class="input-group">
+          <label>۴) فایل(های) صندوق (اختیاری) (4.xlsx یا مجموعه)</label>
+          <input id="fundFileInput" type="file" accept=".csv,.xlsx" multiple disabled />
+        </div>
+        <div class="input-group">
+          <label>۵) فایل(های) صندوق‌های طلا (اختیاری) (5.xlsx یا مجموعه)</label>
+          <input id="goldFileInput" type="file" accept=".csv,.xlsx" multiple disabled />
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <div class="input-group" style="max-width:220px">
+          <label>Profile</label>
+          <select id="profileSelect">
+            <option value="Standard" selected>Standard</option>
+            <option value="Conservative">Conservative</option>
+            <option value="Aggressive">Aggressive</option>
+          </select>
+        </div>
+        <div class="input-group" style="max-width:220px">
+          <label>تاریخ آزمون (تحلیل/بک‌تست تا این تاریخ)</label>
+          <input id="testDate" type="text" placeholder="مثال: 1404/04/24" />
+        </div>
+        <div class="input-group" style="max-width:220px">
+          <label>بک‌تست ۳۰روزه بعد از تاریخ</label>
+          <select id="btToggle">
+            <option value="off" selected>خاموش</option>
+            <option value="on">روشن</option>
+          </select>
+        </div>
+        <div class="input-group" style="max-width:220px">
+          <label>حجم ریسک (% از سرمایه)</label>
+          <input id="riskPct" type="number" step="0.1" min="0.1" max="5" value="1.0" />
+        </div>
+        <div class="input-group" style="max-width:220px">
+          <label>سرمایه (تومان)</label>
+          <input id="equity" type="number" step="10000000" value="1000000000" />
+        </div>
+      </div>
+
+      <!-- تنظیمات تعدیل خودکار -->
+      <div class="panel" style="margin-top:12px">
+        <div class="row">
+          <div class="input-group" style="max-width:220px">
+            <label>تعدیل خودکار افزایش سرمایه</label>
+            <select id="caEnabled">
+              <option value="on" selected>روشن</option>
+              <option value="off">خاموش</option>
+            </select>
+          </div>
+          <div class="input-group" style="max-width:220px">
+            <label>آستانه نسبت (افت) — thrDown</label>
+            <input id="caThrDown" type="number" step="0.01" min="0.40" max="0.95" value="0.70" />
+          </div>
+          <div class="input-group" style="max-width:220px">
+            <label>آستانه نسبت (افزایش) — thrUp</label>
+            <input id="caThrUp" type="number" step="0.01" min="1.10" max="3.00" value="1.40" />
+          </div>
+          <div class="input-group" style="max-width:220px">
+            <label>تحمل اختلاف OHLC — tol</label>
+            <input id="caTol" type="number" step="0.01" min="0.01" max="0.15" value="0.06" />
+          </div>
+          <div class="input-group" style="max-width:220px">
+            <label>تعدیل حجم (v ← v/factor)</label>
+            <select id="caAdjVol">
+              <option value="on" selected>روشن</option>
+              <option value="off">خاموش</option>
+            </select>
+          </div>
+        </div>
+        <div class="chips">
+          <span class="chip info">اگر نسبت‌های Close/High/Low/(Open) روز جاری به روز قبل، حول یک ضریب ثابت و خارج از محدودهٔ عادی باشند ⇒ رویداد «افزایش سرمایه/تقسیم» شناسایی و همهٔ گذشته با همان ضریب تعدیل می‌شود.</span>
+        </div>
+      </div>
+
+      <!-- پایش/بک‌تست شرطی -->
+      <div class="panel" style="margin-top:12px">
+        <div class="row">
+          <div class="input-group" style="max-width:220px">
+            <label>تاریخ شروع پایش</label>
+            <input id="monStartDate" type="text" placeholder="مثال: 1400/01/01" />
+          </div>
+          <div class="input-group" style="max-width:220px">
+            <label>آستانه «کشف» (%)</label>
+            <input id="thrDisc" type="number" step="1" min="0" max="99" value="80" />
+          </div>
+          <div class="input-group" style="max-width:220px">
+            <label>آستانه «تداوم» (%)</label>
+            <input id="thrCont" type="number" step="1" min="0" max="99" value="80" />
+          </div>
+          <div class="input-group" style="max-width:220px">
+            <label>تعداد روز پس از خرید</label>
+            <input id="monDays" type="number" step="1" min="5" max="300" value="30" />
+          </div>
+          <div class="input-group" style="max-width:220px">
+            <label>تارگت (%)</label>
+            <input id="monTarget" type="number" step="1" min="5" max="500" value="20" />
+          </div>
+          <div class="input-group" style="max-width:220px">
+            <label>فاصلهٔ باز-پایش (روز)</label>
+            <input id="rescanDays" type="number" step="1" min="1" max="90" value="10" />
+          </div>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <button id="runMonitorBtn" class="btn" disabled>اجرای پایش/بک‌تست «نخستین ورود»</button>
+          <button id="runMultiMonitorBtn" class="btn" disabled>اجرای پایش/بک‌تست «چند-نوبته»</button>
+          <span class="muted">— چند-نوبته: از تاریخ شروع، هر <b>N</b> روز یک‌بار جستجو و «ورودهای بعدی» ثبت می‌شود.</span>
+        </div>
+      </div>
+
+      <!-- پنل یادگیری ماشین -->
+      <div class="panel" style="margin-top:12px">
+        <div class="row">
+          <button id="mlTrainBtn" class="btn" disabled>شروع یادگیری ماشین لرنینگ</button>
+          <span class="muted">— هدف: <b>+20%</b> طی <b>60</b> روز | پیش‌فیلتر آموزش: کشف ≥ 70 و تداوم ≥ 60.</span>
+        </div>
+        <div id="mlStatus" class="log">وضعیت ML: منتظر بارگذاری شاخص و حداقل یک ابزار (سهم/صندوق)…</div>
+      </div>
+
+      <div id="regimeBox" class="panel" style="margin-top:12px;display:none">
+        <div class="chips" id="regimeChips"></div>
+      </div>
+
+      <div id="drop" class="drop" style="margin-top:10px">فایل(های) سهام/صندوق را اینجا رها کنید (بعد از انتخاب شاخص‌ها)</div>
+
+      <div class="row" style="margin-top:10px">
+        <button id="clearBtn" class="btn" disabled>پاک‌کردن نتایج</button>
+      </div>
+
+      <div id="status" class="log">وضعیت: منتظر انتخاب فایل شاخص کل...</div>
+    </div>
+
+    <div id="results" class="results"></div>
+  </div>
+
+  <!-- Loader اختیاری XLSX -->
+  <script>
+    (function loadLocalXLSX(){
+      const s=document.createElement('script');
+      s.src='./xlsx.full.min.js';
+      s.onload=()=>window.dispatchEvent(new Event('xlsx-ready'));
+      s.onerror=()=>window.dispatchEvent(new Event('xlsx-missing'));
+      document.head.appendChild(s);
+    })();
+  </script>
+
+  <script>
+  // ====== Config & State ======
+  const rawConfig = JSON.parse(document.getElementById('scanner-config').textContent);
+  const BASE_CFG = { ...rawConfig, profiles: rawConfig.profiles, adaptive: !!rawConfig.adaptive, corpActions: rawConfig.corpActions, ml: rawConfig.ml };
+
+  let CFG = {}; // با applyProfile مقدار می‌گیرد
+  const APP = {
+    indexData:null,
+    sectorData:null,
+    isXlsxReady:false,
+    regime:{ ok:false, details:{} },
+    // همهٔ ابزارها (سهام/صندوق/صندوق طلا) در همین آرایه نگهداری می‌شوند:
+    stocks: [],           // [{name, data, caEvents}]
+    cards: Object.create(null),
+    ML: null              // {w,b,mu,sigma, auc, acc, win70, counts}
+  };
+
+  // ====== DOM ======
+  const statusEl = document.getElementById('status');
+  const stockFileInput = document.getElementById('stockFileInput');
+  const fundFileInput  = document.getElementById('fundFileInput');
+  const goldFileInput  = document.getElementById('goldFileInput');
+  const indexFileInput = document.getElementById('indexFileInput');
+  const sectorFileInput = document.getElementById('sectorFileInput');
+  const clearBtn = document.getElementById('clearBtn');
+  const drop = document.getElementById('drop');
+  const resultsEl = document.getElementById('results');
+  const profileSelect = document.getElementById('profileSelect');
+  const testDateEl = document.getElementById('testDate');
+  const btToggle = document.getElementById('btToggle');
+  const riskPctEl = document.getElementById('riskPct');
+  const equityEl = document.getElementById('equity');
+
+  const caEnabledEl = document.getElementById('caEnabled');
+  const caThrDownEl = document.getElementById('caThrDown');
+  const caThrUpEl   = document.getElementById('caThrUp');
+  const caTolEl     = document.getElementById('caTol');
+  const caAdjVolEl  = document.getElementById('caAdjVol');
+
+  const monStartDateEl = document.getElementById('monStartDate');
+  const thrDiscEl = document.getElementById('thrDisc');
+  const thrContEl = document.getElementById('thrCont');
+  const monDaysEl = document.getElementById('monDays');
+  const monTargetEl = document.getElementById('monTarget');
+  const rescanDaysEl = document.getElementById('rescanDays');
+
+  const runMonitorBtn = document.getElementById('runMonitorBtn');
+  const runMultiMonitorBtn = document.getElementById('runMultiMonitorBtn');
+
+  const regimeBox = document.getElementById('regimeBox');
+  const regimeChips = document.getElementById('regimeChips');
+
+  const mlTrainBtn = document.getElementById('mlTrainBtn');
+  const mlStatus = document.getElementById('mlStatus');
+
+  // ====== Utils ======
+  const zwnj=/\u200c/g;
+  const normalizeStr=s=>(s||"").toString().replace(zwnj,'').replace(/\s+/g,' ').trim();
+  const faDigits=str=>(str||"").replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+  const toNum=v=>{ if(v===null||v===undefined||v==="")return NaN; if(typeof v==='number')return v;
+    const s=faDigits(String(v)).replace(/[, ]/g,'').trim(); const m=s.match(/-?\d+(\.\d+)?/); return m?Number(m[0]):NaN; };
+  const mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:NaN;
+  const sum=a=>a.reduce((s,x)=>s+(Number.isFinite(x)?x:0),0);
+  const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+  const fmtPct=x=>Number.isFinite(x)?(x*100).toFixed(1)+'%':'—';
+  const fmtNum=x=>Number.isFinite(x)? x.toLocaleString('fa-IR'):'—';
+  const stdev=a=>{ if(!a.length)return NaN; const m=mean(a); return Math.sqrt(mean(a.map(x=>(x-m)*(x-m)))); };
+  const quantile=(arr,q)=>{ const a=arr.filter(Number.isFinite).slice().sort((x,y)=>x-y); const n=a.length; if(!n)return NaN; const pos=(n-1)*q; const b=Math.floor(pos); const r=pos-b; return a[b]+(a[b+1]!==undefined?r*(a[b+1]-a[b]):0); };
+  const pad2 = n => (n<10?('0'+n):String(n));
+  function normalizeDateStr(s){
+    s = faDigits(String(s)).trim();
+    const parts = s.split(/[^0-9]/).filter(Boolean);
+    if(parts.length>=3){
+      const y=Number(parts[0]), m=Number(parts[1]), d=Number(parts[2]);
+      return `${String(y).padStart(4,'0')}/${pad2(m)}/${pad2(d)}`;
+    }
+    return s;
+  }
+  function dateKeyFromStr(s){
+    s = faDigits(String(s)).trim();
+    const parts = s.split(/[^0-9]/).filter(Boolean);
+    if(parts.length>=3){
+      const y=Number(parts[0]), m=Number(parts[1]), d=Number(parts[2]);
+      return y*10000 + m*100 + d;
+    }
+    return Number.NaN;
+  }
+
+  function applyProfile(){
+    const p = BASE_CFG.profiles[profileSelect.value] || BASE_CFG.profiles.Standard;
+    CFG = JSON.parse(JSON.stringify(BASE_CFG));
+    CFG.thresholds.cv20_max = p.cv20_max;
+    CFG.thresholds.volThrust_ratio_min = p.volThrust_ratio_min;
+    CFG.thresholds.powerLast3_avg_min = p.powerLast3_avg_min;
+    CFG.liquidity = { min_tval_20: p.min_tval_20, min_trades_med20: p.min_trades_med20 };
+
+    CFG.scoreToProb = (score, maxScore)=>Math.max(0,Math.min(99,Math.round(score/maxScore*100)));
+    CFG.pathBoost = (prob,a,b)=>{ if(a>=5)prob=Math.max(prob,90); else if(a===4)prob=Math.max(prob,82); if(b>=5)prob=Math.max(prob,88); else if(b===4)prob=Math.max(prob,78); return Math.min(99,prob); };
+    CFG.microBoost = (prob,power,vol3,distHigh)=>{ if(Number.isFinite(power)&&power>=1.5)prob+=3; if(Number.isFinite(vol3)&&vol3>=1.4)prob+=2; if(Number.isFinite(distHigh)&&distHigh>=-0.05)prob+=2; return Math.max(0,Math.min(99,prob)); };
+    CFG.penalties = {
+      ext20: (ext)=> ext>0.12?20: ext>0.08?10:0,
+      run15: (r)=> r>0.40?20: r>0.25?10:0,
+      sinceFirst20: (d)=> d>20?20: d>10?10:0,
+      atrPct: (a)=> a>0.06?10:0,
+      inflow3: (s3)=> (Number.isFinite(s3)&&s3<=0)?10:0,
+      distDays: (cnt)=> cnt>=3?10:0
+    };
+  }
+  applyProfile();
+  const MAX_SCORE = ()=>Object.values(CFG.coreWeights).reduce((a,b)=>a+b,0);
+
+  // ====== Indicators / Patterns ======
+  function calculateRSI(data, period){
+    const rsi = Array(data.length).fill(undefined);
+    if(data.length<=period) return rsi;
+    const ch=data.map((d,i)=>i>0?d.c-data[i-1].c:0);
+    let avgGain=0, avgLoss=0;
+    for(let i=1;i<=period;i++){ ch[i]>0?avgGain+=ch[i]:avgLoss-=ch[i]; }
+    avgGain/=period; avgLoss/=period;
+    for(let i=period;i<data.length;i++){
+      const change=ch[i];
+      avgGain=(avgGain*(period-1)+Math.max(change,0))/period;
+      avgLoss=(avgLoss*(period-1)+Math.max(-change,0))/period;
+      rsi[i]=avgLoss===0?100:(100-(100/(1+avgGain/avgLoss)));
+    }
+    return rsi;
+  }
+  function detectBullishDivergence(priceSeries, indicatorSeries, lookback, minSep=5){
+    const n=priceSeries.length; if(n<lookback) return false;
+    const p=priceSeries.slice(-lookback); const ind=indicatorSeries.slice(-lookback);
+    const okInd=(i)=>Number.isFinite(ind[i])&&Number.isFinite(ind[i-1])&&Number.isFinite(ind[i-2])&&Number.isFinite(ind[i+1])&&Number.isFinite(ind[i+2]);
+    const okP=(i)=>Number.isFinite(p[i])&&Number.isFinite(p[i-1])&&Number.isFinite(p[i-2])&&Number.isFinite(p[i+1])&&Number.isFinite(p[i+2]);
+    const troughs=(arr,guard)=>{const t=[];for(let i=2;i<arr.length-2;i++){if(guard(i)&&arr[i]<arr[i-1]&&arr[i]<arr[i-2]&&arr[i]<=arr[i+1]&&arr[i]<=arr[i+2])t.push({i,v:arr[i]});}return t;};
+    const tInd=troughs(ind,okInd); if(tInd.length<2) return false;
+    for(let a=tInd.length-1;a>0;a--){
+      const t1=tInd[a];
+      for(let b=a-1;b>=0;b--){
+        const t0=tInd[b]; if(t1.i-t0.i<minSep) continue;
+        if(t1.v>t0.v && okP(t1.i)&&okP(t0.i)){ if(p[t1.i]<p[t0.i]) return true; }
+      }
+    }
+    return false;
+  }
+  function hasVolumeThrust(data, vol20, lastIdx, focus, ratioMin){
+    const start=Math.max(0,lastIdx-focus+1);
+    for(let i=start;i<=lastIdx;i++){
+      const prevClose = i>0?data[i-1].c:data[i].c;
+      const upDay = data[i].c > prevClose;
+      const ratio = (Number.isFinite(vol20[i])&&vol20[i]>0)?(data[i].v/vol20[i]):NaN;
+      if(upDay && Number.isFinite(ratio) && ratio>=ratioMin) return true;
+    }
+    return false;
+  }
+  function closingStrengthPct(data, startIdx, endIdx){
+    let cnt=0, total=0;
+    for(let i=startIdx;i<=endIdx;i++){
+      const r=data[i].h - data[i].l; if(!Number.isFinite(r)||r<=0) continue;
+      const pos = (data[i].c - data[i].l)/r; total++;
+      if(pos>=0.70) cnt++;
+    }
+    return total? cnt/total : NaN;
+  }
+  function pocketPivot(data, vol, i, lookback=10){
+    if(i<lookback) return false;
+    const prevMaxVol = Math.max(...vol.slice(i-lookback,i).filter(Number.isFinite));
+    const prevClose = data[i-1].c;
+    const upDay = data[i].c > prevClose;
+    const ma10 = mean(data.slice(i-9,i+1).map(d=>d.c));
+    const ma20 = mean(data.slice(i-19,i+1).map(d=>d.c));
+    return upDay && Number.isFinite(prevMaxVol) && Number.isFinite(vol[i]) &&
+      vol[i] > prevMaxVol && (data[i].c > ma10 || data[i].c > ma20);
+  }
+  function nr7_today(tr, lastIdx){
+    const s=Math.max(0,lastIdx-6);
+    const last7 = tr.slice(s,lastIdx+1).filter(Number.isFinite);
+    if(last7.length<7) return false;
+    const todayTR = last7[last7.length-1];
+    return todayTR === Math.min(...last7);
+  }
+  function insideDay(data, i){
+    if(i<1) return false;
+    const p=data[i-1]; const d=data[i];
+    return d.h<=p.h && d.l>=p.l;
+  }
+  function threeWeeksTight(data){
+    if(data.length<15) return false;
+    const w1 = data.slice(-5).at(-1).c;
+    const w2 = data.slice(-10,-5).at(-1).c;
+    const w3 = data.slice(-15,-10).at(-1).c;
+    const m = mean([w1,w2,w3]);
+    const maxDev = Math.max(Math.abs(w1-m),Math.abs(w2-m),Math.abs(w3-m));
+    return (maxDev/m) <= BASE_CFG.thresholds.weeks_tight_pct;
+  }
+  function gapAntiChase(data, lastIdx){
+    const gapPct = (Number.isFinite(data[lastIdx].o) && lastIdx>0 && Number.isFinite(data[lastIdx-1].c)) ? (data[lastIdx].o/data[lastIdx-1].c - 1) : 0;
+    return gapPct >= BASE_CFG.thresholds.gap_anti_chase_pct ? gapPct : 0;
+  }
+  function liquidityState(data, lastIdx){
+    const start=Math.max(0,lastIdx-19);
+    const tvals = data.slice(start,lastIdx+1).map(d=>d.tval).filter(Number.isFinite);
+    const trades = data.slice(start,lastIdx+1).map(d=>d.trades).filter(Number.isFinite);
+    const avgTval = tvals.length? mean(tvals): NaN;
+    const medTrades = trades.length? trades.sort((a,b)=>a-b)[Math.floor(trades.length/2)] : NaN;
+    let ok=true, reasons=[];
+    if(Number.isFinite(CFG.liquidity.min_tval_20)){
+      if(!Number.isFinite(avgTval) || avgTval<CFG.liquidity.min_tval_20){ ok=false; reasons.push('ارزش معاملات ناکافی'); }
+    }
+    if(Number.isFinite(CFG.liquidity.min_trades_med20)){
+      if(!Number.isFinite(medTrades) || medTrades<CFG.liquidity.min_trades_med20){ ok=false; reasons.push('تعداد معاملات ناکافی'); }
+    }
+    return { ok, avgTval, medTrades, reasons };
+  }
+  function adaptiveThresholds(data, lastIdx){
+    if(!BASE_CFG.adaptive) return {};
+    const s=Math.max(0,lastIdx-59);
+    const power3 = data.slice(s,lastIdx+1).map((_,iAbs)=>{
+      const i=iAbs+s; const slice=data.slice(Math.max(0,i-2),i+1).map(d=>d.pwr).filter(Number.isFinite);
+      return slice.length?mean(slice):NaN;
+    }).filter(Number.isFinite);
+    const vol3 = data.slice(s,lastIdx+1).map((_,iAbs)=>{
+      const i=iAbs+s; const vol20 = mean(data.slice(Math.max(0,i-19),i+1).map(d=>d.v));
+      return (Number.isFinite(vol20)&&vol20>0)? data[i].v/vol20 : NaN;
+    }).filter(Number.isFinite);
+    return {
+      powerLast3_avg_min_dyn: power3.length? quantile(power3, 0.60) : CFG.thresholds.powerLast3_avg_min,
+      vol3_min_dyn: vol3.length? quantile(vol3, 0.70) : CFG.thresholds.volThrust_ratio_min
+    };
+  }
+
+  // ====== Parsing ======
+  // نگاشت انعطاف‌پذیر ستون‌ها برای انواع مختلف
+  function parseData(rowsRaw, kind){
+    if(!rowsRaw||!rowsRaw.length) return [];
+    const cols=Object.keys(rowsRaw[0]||{}).map(normalizeStr);
+    const by=k=>cols.find(c=>c.includes(k));
+    const ex=k=>cols.find(c=>c===k);
+
+    // شاخص کل / صنعت: تاریخ + Close/شاخص کل
+    if(kind==='index' || kind==='sector'){
+      const col={ date:ex('تاریخ')||by('تاریخ'), close:ex('شاخص کل')||by('شاخص کل')||ex('Close')||by('Close')||by('شاخص')||by('Index') };
+      if(!col.date||!col.close) throw new Error('فایل شاخص باید ستون‌های «تاریخ» و «شاخص کل/Close» داشته باشد.');
+      const arr = rowsRaw.map(r=>{
+        const ds = normalizeDateStr(r[col.date]);
+        const k = dateKeyFromStr(ds);
+        return { d:ds, k, c:toNum(r[col.close]) };
+      }).filter(r=>r.d && Number.isFinite(r.c) && Number.isFinite(r.k));
+      arr.sort((a,b)=>a.k-b.k);
+      return arr;
+    }
+
+    // سهام/صندوق/صندوق طلا
+    const isFund = (kind==='fund' || kind==='gold');
+    // کاندیداهای ستون‌ها
+    const cDate   = ex('تاریخ')||by('تاریخ');
+    // Close برای صندوق‌ها ممکن است NAV باشد
+    const cClose  = normalizeStr(
+      ex('قیمت پایانی')||by('قیمت پایانی')||
+      (isFund? (ex('NAV ابطال')||by('NAV ابطال')||ex('NAV صدور')||by('NAV صدور')||ex('NAV')||by('NAV')) : null)||
+      ex('Close')||by('Close')||ex('Price')||by('Price')
+    );
+    const cHigh   = ex('بیشترین قیمت')||by('بیشترین قیمت')||ex('High')||by('High');
+    const cLow    = ex('کمترین قیمت')||by('کمترین قیمت')||ex('Low')||by('Low');
+    const cVol    = ex('حجم')||by('حجم ')||ex('Volume')||by('Volume');
+    const cOpen   = ex('اولین قیمت')||by('اولین قیمت')||ex('Open')||by('Open');
+    const cPower  = by('قدرت خرید');
+    const cInflow = by('ورود پول')||by('ورود پول (تومان)');
+    const cTval   = by('ارزش معاملات')||by('ارزش معاملات (تومان)')||by('Value');
+    const cTrades = by('تعداد معاملات')||by('تعداد معامله')||by('Trades');
+
+    if(!cDate || !cClose){
+      throw new Error('ستون‌های «تاریخ» و «قیمت پایانی/NAV/Close» یافت نشد.');
+    }
+
+    // برای سهام، وجود High/Low/Volume لازم است؛ برای صندوق‌ها اگر نبود، مقدار جایگزین می‌گذاریم
+    if(!isFund && (!cHigh || !cLow || !cVol)){
+      throw new Error('سهم: ستون‌های تاریخ/پایانی/بیشترین/کمترین/حجم لازم است.');
+    }
+
+    const out = rowsRaw.map(r=>{
+      const ds = normalizeDateStr(r[cDate]);
+      const k = dateKeyFromStr(ds);
+      const close = toNum(r[cClose]);
+
+      // جایگزین‌های صندوق در صورت نبود High/Low/Vol
+      const hi = cHigh ? toNum(r[cHigh]) : close;
+      const lo = cLow  ? toNum(r[cLow])  : close;
+      // اگر Volume نبود، صفر می‌گذاریم (تحلیل‌های حجمی ممکن است غیرفعال شوند اما خواندن فایل تضمین می‌شود)
+      const vol = cVol ? toNum(r[cVol]) : 0;
+
+      return {
+        d: ds, k,
+        c: close,
+        h: hi,
+        l: lo,
+        v: vol,
+        o: cOpen?toNum(r[cOpen]):NaN,
+        pwr: cPower?toNum(r[cPower]) : NaN,
+        inflow: cInflow?toNum(r[cInflow]) : NaN,
+        tval: cTval?toNum(r[cTval]) : NaN,
+        trades: cTrades?toNum(r[cTrades]) : NaN
+      };
+    }).filter(r=>r.d && Number.isFinite(r.k) && Number.isFinite(r.c) && Number.isFinite(r.h) && Number.isFinite(r.l) && Number.isFinite(r.v));
+
+    out.sort((a,b)=>a.k-b.k);
+    return out;
+  }
+
+  // ====== Corporate Actions: Detection + Back-Adjustment ======
+  function getCAOptionsFromUI(){
+    return {
+      enabled: (caEnabledEl.value==='on'),
+      thrDown: Math.max(0.4, Math.min(0.95, Number(caThrDownEl.value)||BASE_CFG.corpActions.thrDown)),
+      thrUp:   Math.max(1.1, Math.min(3.0,  Number(caThrUpEl.value)||BASE_CFG.corpActions.thrUp)),
+      tolOHLC: Math.max(0.01, Math.min(0.15, Number(caTolEl.value)||BASE_CFG.corpActions.tolOHLC)),
+      adjustVolume: (caAdjVolEl.value==='on')
+    };
+  }
+  function detectCorporateActions(stockRaw, opts){
+    const events=[]; const n=stockRaw.length; if(n<2) return events;
+    for(let i=1;i<n;i++){
+      const p=stockRaw[i-1], d=stockRaw[i];
+      if(!(Number.isFinite(p.c)&&Number.isFinite(d.c)&&p.c>0)) continue;
+      const ratios=[];
+      const rc = d.c/p.c; ratios.push(rc);
+      if(Number.isFinite(p.h)&&Number.isFinite(d.h)&&p.h>0) ratios.push(d.h/p.h);
+      if(Number.isFinite(p.l)&&Number.isFinite(d.l)&&p.l>0) ratios.push(d.l/p.l);
+      if(Number.isFinite(p.o)&&Number.isFinite(d.o)&&p.o>0) ratios.push(d.o/p.o);
+      const med = (arr)=>{ const a=arr.slice().sort((x,y)=>x-y); const m=Math.floor(a.length/2); return a.length%2?a[m]: (a[m-1]+a[m])/2; };
+      const rMed = med(ratios.filter(Number.isFinite));
+      if(!Number.isFinite(rMed)) continue;
+      const consistent = ratios.every(r=>Number.isFinite(r) && Math.abs(r/rMed - 1) <= opts.tolOHLC);
+      const bigMove = (rMed <= opts.thrDown) || (rMed >= opts.thrUp);
+      if(consistent && bigMove){
+        events.push({ idx:i, date: stockRaw[i].d, factor:rMed, type: (rMed<1?'down-scale (bonus/rights)':'up-scale (reverse)') });
+      }
+    }
+    return events;
+  }
+  function applyBackAdjust(stockRaw, events, adjustVolume){
+    if(!events.length) return { adjusted: stockRaw.slice(), adjFactor: new Array(stockRaw.length).fill(1) };
+    const n=stockRaw.length;
+    const adjFactor = new Array(n).fill(1);
+    events.sort((a,b)=>a.idx-b.idx);
+    for(const ev of events){ for(let k=0;k<ev.idx;k++){ adjFactor[k] *= ev.factor; } }
+    const adjusted = stockRaw.map((r,idx)=>{
+      const f = adjFactor[idx];
+      const o = Number.isFinite(r.o)? r.o*f : NaN;
+      const c = r.c*f, h=r.h*f, l=r.l*f;
+      const v = adjustVolume && f>0 ? r.v / f : r.v;
+      return { ...r, o, c, h, l, v, __adjFactor:f };
+    });
+    return { adjusted, adjFactor };
+  }
+  function adjustForCorporateActions(stockRaw, caOpts){
+    if(!caOpts.enabled) return { adjusted: stockRaw.slice(), events:[], adjFactor:new Array(stockRaw.length).fill(1) };
+    const events = detectCorporateActions(stockRaw, caOpts);
+    const { adjusted, adjFactor } = applyBackAdjust(stockRaw, events, caOpts.adjustVolume);
+    return { adjusted, events, adjFactor };
+  }
+
+  // ====== RS Alignment ======
+  function alignRS(stock, idx){
+    const out=[]; let j=0;
+    for(let i=0;i<stock.length;i++){
+      const k=stock[i].k;
+      while(j<idx.length-1 && idx[j+1].k<=k) j++;
+      const ic=(idx[j]&&idx[j].k<=k)?idx[j].c:NaN;
+      const rs=(Number.isFinite(ic)&&ic>0)?stock[i].c/ic:NaN;
+      out.push({...stock[i], rs});
+    }
+    return out;
+  }
+  function alignRSvsSector(stock, sector){
+    if(!sector||!sector.length) return stock.map(s=>({...s, rsS:NaN}));
+    const out=[]; let j=0;
+    for(let i=0;i<stock.length;i++){
+      const k=stock[i].k;
+      while(j<sector.length-1 && sector[j+1].k<=k) j++;
+      const sc=(sector[j]&&sector[j].k<=k)?sector[j].c:NaN;
+      const rsS=(Number.isFinite(sc)&&sc>0)?stock[i].c/sc:NaN;
+      out.push({...stock[i], rsS});
+    }
+    return out;
+  }
+
+  // ====== Regime (بازار) ======
+  function computeRegime(indexData){
+    const n=indexData.length; if(n<60) return {ok:false,details:{msg:'index too short'}};
+    const c=indexData.map(x=>x.c);
+    const ma=(arr,w,i)=>{const s=Math.max(0,i-w+1);const sl=arr.slice(s,i+1);return sl.length?mean(sl):NaN;};
+    const ma20= c.map((_,i)=>ma(c,20,i));
+    const ma60= c.map((_,i)=>ma(c,60,i));
+    const st=i=>i>=19?stdev(c.slice(i-19,i+1)):NaN;
+    const cv20=c.map((_,i)=> (i>=19&&ma20[i]>0)?(st(i)/ma20[i]):NaN);
+    const last=n-1;
+    const maOK = ma20[last]>ma60[last];
+    const cvOK = cv20[last] <= BASE_CFG.regime.cv20_index_max;
+    const dd = c.slice(Math.max(1,n-10)).filter((val,ii,arr)=>{
+      const idx = n - 10 + ii; const prev = c[idx-1] ?? c[0]; return val < prev;
+    }).length;
+    const ddOK = dd <= BASE_CFG.regime.down_days_max10;
+    return { ok:(maOK&&cvOK&&ddOK), details:{ ma20:ma20[last], ma60:ma60[last], cv20:cv20[last], down10:dd, maOK, cvOK, ddOK } };
+  }
+  function renderRegime(){
+    regimeChips.innerHTML='';
+    regimeBox.style.display='block';
+    const d=APP.regime.details;
+    const add=(cls,txt)=>{ const s=document.createElement('span'); s.className='chip '+cls; s.innerHTML=txt; regimeChips.appendChild(s); };
+    add(APP.regime.ok?'ok':'warn', `Regime: <b>${APP.regime.ok?'سالم':'احتیاط'}</b>`);
+    add(d.maOK?'ok':'warn', `MA20>MA60: <b>${d.maOK?'✅':'❌'}</b>`);
+    add(d.cvOK?'ok':'warn', `CV20 شاخص: <b>${Number.isFinite(d.cv20)?d.cv20.toFixed(3):'—'}</b> ≤ ${BASE_CFG.regime.cv20_index_max}`);
+    add(d.ddOK?'ok':'warn', `روزهای نزولی ۱۰روزه: <b>${d.down10}</b> ≤ ${BASE_CFG.regime.down_days_max10}`);
+  }
+
+  // ====== Core Analysis (یک روز) ======
+  function analyze(stockRaw, idxRaw, sectorRaw, testDateStr){
+    let stockData = stockRaw.slice();
+    if(testDateStr){
+      const tk = dateKeyFromStr(testDateStr);
+      if(Number.isFinite(tk)){
+        let cutIdx = -1;
+        for(let i=0;i<stockData.length;i++){ if(stockData[i].k<=tk) cutIdx=i; else break; }
+        if(cutIdx>=0) stockData = stockData.slice(0, cutIdx+1);
+      }
+    }
+    let data = alignRS(stockData, idxRaw);
+    data = alignRSvsSector(data, sectorRaw);
+
+    const rsi = calculateRSI(data, BASE_CFG.rsiPeriod);
+    data = data.map((d,i)=>({...d, rsi:rsi[i]}));
+
+    const N=data.length; const lastIdx=N-1;
+    if(N<BASE_CFG.lookback60) throw new Error(`دادهٔ ابزار کافی نیست (کمتر از ${BASE_CFG.lookback60} روز).`);
+
+    const c=data.map(x=>x.c), h=data.map(x=>x.h), l=data.map(x=>x.l), v=data.map(x=>x.v), o=data.map(x=>x.o);
+    const pwr=data.map(x=>x.pwr), inflow=data.map(x=>x.inflow);
+    const ma=(arr,w,i)=>{const s=Math.max(0,i-w+1);const sl=arr.slice(s,i+1).filter(Number.isFinite);return sl.length?mean(sl):NaN;};
+    const st=i=>i>=19?stdev(c.slice(i-19,i+1)):NaN;
+    const tr=[], ma10=[], ma20=[], ma60=[], atr14=[], cv20=[], vol20=[];
+    for(let i=0;i<N;i++){
+      ma10[i]=ma(c,10,i); ma20[i]=ma(c,20,i); ma60[i]=ma(c,60,i);
+      const prev=i>0?c[i-1]:c[i];
+      tr[i]=Math.max(h[i]-l[i], Math.abs(h[i]-prev), Math.abs(l[i]-prev));
+      atr14[i]=i>=13? mean(tr.slice(i-13,i+1)) : NaN;
+      cv20[i]=(i>=19 && Number.isFinite(ma20[i]) && ma20[i]>0)? (st(i)/ma20[i]) : NaN;
+      vol20[i]=i>=19? mean(v.slice(i-19,i+1)) : NaN;
+    }
+
+    // سقف دقیق ۶۰ روزه
+    const rollingMaxWindow = (arr, end, win) => {
+      const start = Math.max(0, end - (win - 1));
+      const seg = arr.slice(start, end + 1).filter(Number.isFinite);
+      return seg.length ? Math.max(...seg) : NaN;
+    };
+    const high60_curr = rollingMaxWindow(h, lastIdx, 60);
+    const high60_prev = rollingMaxWindow(h, Math.max(0,lastIdx-1), 60);
+    const distTo60High = Number.isFinite(high60_curr)&&high60_curr>0 ? (c[lastIdx]/high60_curr - 1) : NaN;
+    const isBreakout60 = Number.isFinite(high60_prev) && c[lastIdx] > high60_prev;
+
+    const i0=Math.max(0,N-BASE_CFG.focus10);
+    const daysAboveMA20= c.slice(i0).filter((x,ii)=> x > ma20[i0+ii]).length;
+    const powerLast10 = pwr.slice(i0).filter(Number.isFinite);
+    const powerStrongDays = powerLast10.filter(x=>x>=BASE_CFG.thresholds.powerStrong_level).length;
+    const powerLast3Avg = mean(pwr.slice(Math.max(0,N-3)).filter(Number.isFinite));
+    const inflowLast3Sum = sum(inflow.slice(Math.max(0,N-3)));
+
+    const volThrustOK = hasVolumeThrust(data, vol20, lastIdx, BASE_CFG.focus10, CFG.thresholds.volThrust_ratio_min);
+    const rsiDiv = detectBullishDivergence(l, rsi, BASE_CFG.divergenceLookback, 5);
+
+    const L60s=Math.max(0,N-BASE_CFG.lookback60);
+    const inflow60Arr = inflow.slice(L60s).filter(Number.isFinite);
+    const inflowP80 = inflow60Arr.length? quantile(inflow60Arr, BASE_CFG.thresholds.inflowSpike_pct) : NaN;
+    const hasInflowSpikeIn10 = Number.isFinite(inflowP80) && inflow.slice(i0).some(x=>Number.isFinite(x)&&x>=inflowP80);
+
+    const s10=Math.max(0,lastIdx-9);
+    const hi10=Math.max(...h.slice(s10,lastIdx+1).filter(Number.isFinite));
+    const lo10=Math.min(...l.slice(s10,lastIdx+1).filter(Number.isFinite));
+    const range10Ratio = (Number.isFinite(hi10)&&Number.isFinite(lo10)&&c[lastIdx]>0)? (hi10-lo10)/c[lastIdx] : NaN;
+    const nearMA20_last3 = mean([0,1,2].map(k=>{
+      const i=lastIdx-k; return (i>=0&&Number.isFinite(ma20[i])&&c[i]>0)? Math.abs(c[i]-ma20[i])/c[i] : NaN;
+    }).filter(Number.isFinite));
+
+    const rsMA = data.map((_,i)=>{const s=Math.max(0,i-BASE_CFG.rsLookback+1);return mean(data.slice(s,i+1).map(d=>d.rs).filter(Number.isFinite));});
+    const rsOK = Number.isFinite(data[lastIdx].rs) && Number.isFinite(rsMA[lastIdx]) && data[lastIdx].rs >= rsMA[lastIdx];
+    const rsHH60 = (()=>{ const s=Math.max(0,lastIdx-59); const arr=data.slice(s,lastIdx+1).map(d=>d.rs).filter(Number.isFinite); return arr.length? data[lastIdx].rs >= Math.max(...arr) : false; })();
+    const rsSlope = (Number.isFinite(rsMA[lastIdx]) && Number.isFinite(rsMA[Math.max(0,lastIdx-5)]) && rsMA[lastIdx]>rsMA[Math.max(0,lastIdx-5)]);
+    const rsSectorOK = Number.isFinite(data[lastIdx].rsS)? (()=>{
+      const rsSMA = mean(data.slice(Math.max(0,lastIdx-BASE_CFG.rsLookback+1),lastIdx+1).map(d=>d.rsS).filter(Number.isFinite));
+      return Number.isFinite(rsSMA) && data[lastIdx].rsS >= rsSMA;
+    })(): false;
+
+    const closingPct = closingStrengthPct(data, i0, lastIdx);
+    let hasPocket=false;
+    for(let i=i0;i<=lastIdx;i++){ if(pocketPivot(data, v, i, 10)) { hasPocket=true; break; } }
+    const isNR7 = nr7_today(tr, lastIdx);
+    const insideCluster = insideDay(data,lastIdx) && insideDay(data,lastIdx-1);
+    const threeWeeksT = threeWeeksTight(data);
+    const gapPct = gapAntiChase(data,lastIdx);
+    const liq = liquidityState(data, lastIdx);
+    const dyn = adaptiveThresholds(data, lastIdx);
+    const power3Min = dyn.powerLast3_avg_min_dyn || CFG.thresholds.powerLast3_avg_min;
+
+    let score=0; const hit={};
+    hit.rs = rsOK; score += hit.rs? CFG.coreWeights.rs : 0;
+    hit.rsHH60 = !!rsHH60; score += hit.rsHH60? CFG.coreWeights.rsHH60 : 0;
+    hit.rsSlope = !!rsSlope; score += hit.rsSlope? CFG.coreWeights.rsSlope : 0;
+    hit.rsSector = !!rsSectorOK; score += hit.rsSector? CFG.coreWeights.rsSector : 0;
+    hit.cv20 = Number.isFinite(cv20[lastIdx]) && cv20[lastIdx] <= CFG.thresholds.cv20_max; score += hit.cv20? CFG.coreWeights.cv20 : 0;
+    hit.maCross = Number.isFinite(ma20[lastIdx])&&Number.isFinite(ma60[lastIdx])&&(ma20[lastIdx]>ma60[lastIdx]); score += hit.maCross? CFG.coreWeights.maCross : 0;
+    hit.powerFrac = (powerStrongDays >= BASE_CFG.thresholds.powerStrong_minDays) && (Number.isFinite(powerLast3Avg) && powerLast3Avg >= power3Min); score += hit.powerFrac? CFG.coreWeights.powerFrac : 0;
+    hit.inflow3 = inflowLast3Sum >= BASE_CFG.thresholds.inflow3_sum_min; score += hit.inflow3? CFG.coreWeights.inflow3 : 0;
+    hit.volThrust = hasVolumeThrust(data, vol20, lastIdx, BASE_CFG.focus10, CFG.thresholds.volThrust_ratio_min); score += hit.volThrust? CFG.coreWeights.volThrust : 0;
+    hit.distHigh = Number.isFinite(distTo60High) && distTo60High >= BASE_CFG.thresholds.distTo60High_min; score += hit.distHigh? CFG.coreWeights.distHigh : 0;
+    hit.breakout60 = !!isBreakout60; score += hit.breakout60? CFG.coreWeights.breakout60 : 0;
+    hit.wrb = (tr[lastIdx] > BASE_CFG.thresholds.wrb_atr_mult * atr14[lastIdx]) || (lastIdx>0 && tr[lastIdx-1] > BASE_CFG.thresholds.wrb_atr_mult * atr14[lastIdx-1]); score += hit.wrb? CFG.coreWeights.wrb : 0;
+    hit.rsiDiv = !!rsiDiv; score += hit.rsiDiv? CFG.coreWeights.rsiDiv : 0;
+    hit.pocketPivot = hasPocket; score += hit.pocketPivot? CFG.coreWeights.pocketPivot : 0;
+    const nrInside = (isNR7 || insideCluster || threeWeeksT); hit.nr7_or_inside = nrInside; score += nrInside? CFG.coreWeights.nr7_or_inside : 0;
+    hit.closingStrength = Number.isFinite(closingPct) && closingPct >= 0.60; score += hit.closingStrength? CFG.coreWeights.closingStrength : 0;
+
+    const ma20SlopeUp = Number.isFinite(ma20[lastIdx]) && Number.isFinite(ma20[Math.max(0,lastIdx-BASE_CFG.ma20SlopeLookback)]) ? (ma20[lastIdx] > ma20[Math.max(0,lastIdx-BASE_CFG.ma20SlopeLookback)]) : false;
+    const vol3 = mean([lastIdx,lastIdx-1,lastIdx-2].filter(i=>i>=0).map(i=> Number.isFinite(vol20[i])&&vol20[i]>0 ? v[i]/vol20[i] : NaN).filter(Number.isFinite));
+    const ticksA = [ma20SlopeUp, (daysAboveMA20>=BASE_CFG.thresholds.aboveMA20_days_min), hit.powerFrac, (inflowLast3Sum>=0)&&hasInflowSpikeIn10, hit.volThrust].filter(Boolean).length;
+    const ticksB = [ (hit.cv20 || (Number.isFinite(range10Ratio)&&range10Ratio<=BASE_CFG.thresholds.range10_ratio_max)),
+                     ( (()=>{let cnt=0;for(let i=i0+1;i<=lastIdx;i++){ if(l[i]>l[i-1]) cnt++; } return cnt>=3;})() || (Number.isFinite(nearMA20_last3)&&nearMA20_last3<=BASE_CFG.thresholds.nearMA20_last3_max) ),
+                     (powerStrongDays>=BASE_CFG.thresholds.powerStrong_minDays) || (Number.isFinite(powerLast3Avg)&&powerLast3Avg>=power3Min),
+                     (inflowLast3Sum>=0),
+                     hit.wrb ].filter(Boolean).length;
+
+    let prob_discovery = CFG.scoreToProb(score, MAX_SCORE());
+    prob_discovery = CFG.pathBoost(prob_discovery, ticksA, ticksB);
+    prob_discovery = CFG.microBoost(prob_discovery, powerLast3Avg, vol3, distTo60High);
+
+    const ext20 = Number.isFinite(ma20[lastIdx])&&ma20[lastIdx]>0? (c[lastIdx]/ma20[lastIdx]-1):NaN;
+    const mn15 = Math.min(...l.slice(Math.max(0,lastIdx-14), lastIdx+1).filter(Number.isFinite));
+    const run15 = Number.isFinite(mn15)&&mn15>0 ? (c[lastIdx]/mn15 - 1) : NaN;
+    let daysSinceFirst20=0; (()=>{
+      const start=Math.max(0,N-60); let first=-1;
+      for(let i=start;i<=lastIdx;i++){
+        const piv = Math.min(...c.slice(Math.max(0,i-19),i).filter(Number.isFinite));
+        if(Number.isFinite(piv)&&piv>0 && (c[i]/piv-1)>=0.20){ first=i; break; }
+      }
+      daysSinceFirst20 = first>=0 ? (lastIdx-first) : 0;
+    })();
+    const atrPct = Number.isFinite(atr14[lastIdx])&&c[lastIdx]>0 ? (atr14[lastIdx]/c[lastIdx]) : NaN;
+    const distDays = pwr.slice(Math.max(0,lastIdx-4)).filter(x=>Number.isFinite(x)&&x<1).length;
+
+    const P=CFG.penalties;
+    const penalties = {
+      ext20: P.ext20(ext20),
+      run15: P.run15(run15),
+      sinceFirst20: P.sinceFirst20(daysSinceFirst20),
+      atrPct: P.atrPct(atrPct),
+      inflow3: P.inflow3(inflowLast3Sum),
+      distDays: P.distDays(distDays)
+    };
+    const penalties_sum = Object.values(penalties).reduce((a,b)=>a+b,0);
+    const prob_continuation = clamp(prob_discovery - penalties_sum, 0, 99);
+
+    const factors = [
+      (hit.rs?1:0) + (hit.rsHH60?0.5:0) + (hit.rsSlope?0.5:0) + (hit.rsSector?0.5:0),
+      (hit.cv20?1:0) + ( (nrInside)?0.5:0 ),
+      (hit.closingStrength?1:0) + (hit.pocketPivot?1:0) + (hit.volThrust?0.5:0),
+      (hit.distHigh?0.5:0) + (isBreakout60?0.5:0) + (hit.wrb?0.5:0) + (hit.rsiDiv?0.5:0)
+    ];
+    let rawRank = factors.reduce((a,b)=>a+b,0);
+    rawRank = rawRank / 5.0;
+    let rank = Math.round(clamp(rawRank*20, 0, 100));
+
+    return {
+      lastIdx, data, ma20, ma60, cv20, atr14, vol20, ma10,
+      hits: hit,
+      stats: {
+        rs: data[lastIdx].rs, rsMA: mean(data.slice(Math.max(0,lastIdx-BASE_CFG.rsLookback+1),lastIdx+1).map(d=>d.rs).filter(Number.isFinite)),
+        rsS: data[lastIdx].rsS, distTo60High, isBreakout60, nearMA20_last3, powerStrongDays, powerLast3Avg, inflowLast3Sum,
+        closingPct, hasPocket, isNR7, insideCluster, threeWeeksT,
+        ext20, run15, daysSinceFirst20, atrPct, distDays,
+        liq: liquidityState(data, lastIdx)
+      },
+      score, ticksA, ticksB,
+      prob_discovery, prob_continuation, penalties, penalties_sum,
+      rank,
+      regimeOK: APP.regime.ok
+    };
+  }
+
+  // ====== Backtest ساده نمایشی ======
+  function backtestForward(stockFull, dateStr){
+    const tk = dateKeyFromStr(dateStr);
+    if(!Number.isFinite(tk)) return null;
+    let cut = stockFull.findIndex(r=>r.k===tk);
+    if(cut<0){
+      const ge = stockFull.findIndex(r=>r.k>tk);
+      if(ge<0) return null;
+      cut = ge;
+    }
+    if(cut>=stockFull.length-1) return null;
+    const startClose = stockFull[cut].c;
+    const end = Math.min(stockFull.length-1, cut+30);
+    const fwd = stockFull.slice(cut, end+1);
+    const rets = fwd.map(d=>d.c/startClose - 1);
+    const hit20 = rets.some(r=>r>=0.20);
+    let maxDD=0, peak=startClose;
+    for(let i=0;i<fwd.length;i++){
+      peak=Math.max(peak, fwd[i].c);
+      const dd = fwd[i].c/peak - 1;
+      if(dd<maxDD)maxDD=dd;
+    }
+    const maxRet = Math.max(...rets);
+    return { hit20, maxDD, maxRet, days: end - cut };
+  }
+
+  // ====== Monitor/Conditional Backtest ======
+  function findStartIndexByDate(data, startStr){
+    if(!startStr) return 0;
+    const sk = dateKeyFromStr(normalizeStr(startStr));
+    if(!Number.isFinite(sk)) return 0;
+    for(let i=0;i<data.length;i++){
+      if(data[i].k >= sk) return i;
+    }
+    return -1;
+  }
+  function monitorBacktest(stockFull, idxData, sectorData, startDateStr, thrDisc, thrCont, fwdDays, targetPct){
+    const startIdx = findStartIndexByDate(stockFull, startDateStr);
+    if(startIdx<0) return { found:false, reason:'تاریخ شروع در داده یافت نشد یا بعد از آخرین رکورد است.' };
+    for(let t=startIdx; t<stockFull.length; t++){
+      const dateStr = stockFull[t].d;
+      let res;
+      try { res = analyze(stockFull, idxData, sectorData, dateStr); }
+      catch(e){ continue; }
+      if(!res) continue;
+      if(res.prob_discovery >= thrDisc && res.prob_continuation >= thrCont){
+        const entryPrice = stockFull[t].c;
+        const end = Math.min(stockFull.length - 1, t + fwdDays);
+        let maxRet = -Infinity, daysToTarget = null;
+        let minLow = entryPrice;
+        for(let k=t; k<=end; k++){
+          const retClose = stockFull[k].c/entryPrice - 1;
+          if(retClose>maxRet) maxRet=retClose;
+          if(Number.isFinite(stockFull[k].l) && stockFull[k].l < minLow) minLow = stockFull[k].l;
+          if(daysToTarget === null && retClose >= (targetPct/100)) daysToTarget = k - t;
+        }
+        const maxDropFromEntry = (minLow/entryPrice) - 1;
+        return {
+          found:true, entryIndex:t, entryDate:dateStr, entryPrice,
+          prob_discovery: res.prob_discovery, prob_continuation: res.prob_continuation,
+          windowDays: end - t, hit: daysToTarget!==null, daysToTarget, maxReturn: maxRet, maxDropFromEntry
+        };
+      }
+    }
+    return { found:false, reason:'هیچ روزی پس از تاریخ شروع شرایط ورود را نداشت.' };
+  }
+  function monitorBacktestMulti(stockFull, idxData, sectorData, startDateStr, thrDisc, thrCont, fwdDays, targetPct, rescanDays){
+    const resList = [];
+    const startIdx = findStartIndexByDate(stockFull, startDateStr);
+    if(startIdx<0) return { entries: resList, summary:{}, reason:'تاریخ شروع در داده یافت نشد یا بعد از آخرین رکورد است.' };
+    let tStart = startIdx;
+    const step = Math.max(1, Number(rescanDays)||1);
+    while(tStart < stockFull.length){
+      let foundAt = -1, resAt=null;
+      for(let t=tStart; t<stockFull.length; t++){
+        const dateStr = stockFull[t].d;
+        let r;
+        try{ r = analyze(stockFull, idxData, sectorData, dateStr); }catch(e){ continue; }
+        if(r && r.prob_discovery>=thrDisc && r.prob_continuation>=thrCont){ foundAt=t; resAt=r; break; }
+      }
+      if(foundAt<0) break;
+      const entryPrice = stockFull[foundAt].c;
+      const end = Math.min(stockFull.length - 1, foundAt + fwdDays);
+      let maxRet=-Infinity, daysToTarget=null, minLow=entryPrice;
+      for(let k=foundAt; k<=end; k++){
+        const retClose = stockFull[k].c/entryPrice - 1;
+        if(retClose>maxRet) maxRet=retClose;
+        if(Number.isFinite(stockFull[k].l) && stockFull[k].l<minLow) minLow = stockFull[k].l;
+        if(daysToTarget===null && retClose >= (targetPct/100)) daysToTarget = k - foundAt;
+      }
+      const maxDropFromEntry = (minLow/entryPrice) - 1;
+      resList.push({
+        entryIndex: foundAt, entryDate: stockFull[foundAt].d, entryPrice,
+        prob_discovery: resAt.prob_discovery, prob_continuation: resAt.prob_continuation,
+        windowDays: end - foundAt, hit: daysToTarget!==null, daysToTarget, maxReturn: maxRet, maxDropFromEntry
+      });
+      tStart = foundAt + step;
+    }
+    const total = resList.length;
+    const wins = resList.filter(x=>x.hit).length;
+    const winRate = total? (wins/total) : 0;
+    const avgMaxRet = total? mean(resList.map(x=>x.maxReturn)) : NaN;
+    const avgMaxDD = total? mean(resList.map(x=>x.maxDropFromEntry)) : NaN;
+    const medDaysToTarget = (()=>{
+      const arr = resList.filter(x=>x.hit).map(x=>x.daysToTarget).sort((a,b)=>a-b);
+      if(!arr.length) return null;
+      const m = Math.floor(arr.length/2);
+      return arr.length%2? arr[m] : Math.round((arr[m-1]+arr[m])/2);
+    })();
+    return { entries: resList, summary:{ total, wins, winRate, avgMaxRet, avgMaxDD, medDaysToTarget } };
+  }
+
+  // ====== UI Rendering ======
+  function kpiBox(title,value,color,progress){
+    return `<div class="box"><div class="cap">${title}</div><div class="val" style="color:${color||'inherit'}">${value}</div><div class="progress"><i style="width:${progress||0}%"></i></div></div>`;
+  }
+
+  function cardFor(name,res,btRes,caInfo){
+    const s=res.stats, h=res.hits;
+    const pDisc=res.prob_discovery, pCont=res.prob_continuation;
+    const scorePct=Math.round((res.score/MAX_SCORE())*100);
+
+    const div=document.createElement('div'); 
+    div.className='card';
+    // --- متادیتا برای مرتب‌سازی ---
+    div.dataset.name = name;
+    div.dataset.score = String(res.score);
+    div.dataset.pdisc = String(pDisc);
+    div.dataset.pcont = String(pCont);
+    div.dataset.rank  = String(res.rank);
+    // -------------------------------
+
+    const regimeWarnChip = `<span class="chip ${res.regimeOK?'ok':'warn'}">Regime: <b>${res.regimeOK?'سالم':'احتیاط'}</b></span>`;
+    const liqChip = `<span class="chip ${s.liq.ok?'ok':'warn'}">نقدشوندگی: <b>${s.liq.ok?'کافی':'ضعیف'}</b></span>`;
+    const caChip = caInfo && caInfo.events.length ? `<span class="chip info">تعدیل رویدادها: <b>${caInfo.events.length}</b> مورد</span>` : `<span class="chip">تعدیل: <b>${(caInfo&&caInfo.events.length)||0}</b></span>`;
+
+    const btHtml = btRes? `
+      <table class="tbl">
+        <thead><tr><th colspan="4">بک‌تست ۳۰روزه بعد از تاریخ آزمون</th></tr></thead>
+        <tbody>
+          <tr><td>Hit +20%</td><td>${btRes.hit20?'✅':'❌'}</td><td>MaxDD (peak→trough)</td><td>${fmtPct(btRes.maxDD)}</td></tr>
+          <tr><td>Max Return</td><td>${fmtPct(btRes.maxRet)}</td><td>Days</td><td>${btRes.days}</td></tr>
+        </tbody>
+      </table>` : '';
+
+    const caTable = caInfo && caInfo.events.length ? `
+      <table class="tbl">
+        <thead><tr><th colspan="3">رویدادهای تعدیل‌شده (افزایش سرمایه/تقسیم)</th></tr></thead>
+        <tbody>
+          ${caInfo.events.map((e,idx)=>`<tr><td>${idx+1}</td><td>${e.date}</td><td>ضریب: ${e.factor.toFixed(4)} (${e.type})</td></tr>`).join('')}
+        </tbody>
+      </table>` : '';
+
+    const mlChip = (APP.ML && APP.ML.pMap && APP.ML.pMap[name]!==undefined)
+      ? `<span class="chip info">ML p(hit@60d): <b>${Math.round(APP.ML.pMap[name]*100)}%</b></span>`
+      : '';
+
+    div.innerHTML=`
+      <div class="card-header">
+        <div class="card-title">${name}</div>
+        <button class="btn btn-toggle">نمایش جزئیات</button>
+      </div>
+
+      <div class="kpi">
+        ${kpiBox('احتمال «کشف»', pDisc+'%', 'var(--ok)', pDisc)}
+        ${kpiBox('احتمال «تداوم»', pCont+'%', 'var(--accent-light)', pCont)}
+        ${kpiBox('رتبه (0–100)', res.rank, 'var(--info)', res.rank)}
+      </div>
+
+      <div class="chips">
+        ${regimeWarnChip}
+        ${caChip}
+        ${mlChip}
+        <span class="chip ${h.rs?'ok':'bad'}">RS>MA50: <b>${h.rs?'✅':'❌'}</b></span>
+        <span class="chip ${h.rsHH60?'ok':'warn'}">RS=HH60: <b>${h.rsHH60?'✅':'—'}</b></span>
+        <span class="chip ${h.rsSlope?'ok':'warn'}">شیب RS: <b>${h.rsSlope?'✅':'—'}</b></span>
+        <span class="chip ${h.rsSector?'ok':'warn'}">RS نسبت به صنعت: <b>${h.rsSector?'✅':'—'}</b></span>
+        <span class="chip ${h.cv20?'ok':'warn'}">CV20 ${h.cv20?'≤':'>'} ${CFG.thresholds.cv20_max}</span>
+        <span class="chip ${h.pocketPivot?'ok':'warn'}">Pocket Pivot: <b>${h.pocketPivot?'✅':'—'}</b></span>
+        <span class="chip ${h.closingStrength?'ok':'warn'}">Closing Strength≥60%: <b>${h.closingStrength?'✅':'—'}</b></span>
+        <span class="chip ${h.nr7_or_inside?'ok':'warn'}">NR7/Inside/Tight: <b>${h.nr7_or_inside?'✅':'—'}</b></span>
+        <span class="chip ${h.volThrust?'ok':'warn'}">Vol Thrust≥${CFG.thresholds.volThrust_ratio_min}: <b>${h.volThrust?'✅':'—'}</b></span>
+        ${liqChip}
+      </div>
+
+      <div class="collapsible-content"><div class="collapsible-content-inner">
+        <div class="kpi" style="margin:0">
+          <div class="box"><div class="cap">امتیاز هسته‌ای</div><div class="val">${res.score}/${MAX_SCORE()}</div><div class="cap">(${scorePct}%)</div></div>
+          <div class="box"><div class="cap">مسیر A</div><div class="val">${res.ticksA}/5</div></div>
+          <div class="box"><div class="cap">مسیر B</div><div class="val">${res.ticksB}/5</div></div>
+        </div>
+
+        <table class="tbl">
+          <thead><tr><th colspan="3">سیگنال‌های کلیدی</th></tr></thead>
+          <tbody>
+            <tr><td>RS / MA50</td><td>${Number.isFinite(s.rs)?s.rs.toFixed(6):'—'} / ${Number.isFinite(res.stats.rsMA)?res.stats.rsMA.toFixed(6):'—'}</td><td>${h.rs?'✅':'❌'}</td></tr>
+            <tr><td>CV20 ≤ ${CFG.thresholds.cv20_max}</td><td>${Number.isFinite(res.cv20[res.lastIdx])?res.cv20[res.lastIdx].toFixed(3):'—'}</td><td>${h.cv20?'✅':'❌'}</td></tr>
+            <tr><td>MA20 > MA60</td><td>${fmtNum(Math.round(res.ma20[res.lastIdx]))} / ${fmtNum(Math.round(res.ma60[res.lastIdx]))}</td><td>${h.maCross?'✅':'❌'}</td></tr>
+            <tr><td>قدرت قوی (≥${BASE_CFG.thresholds.powerStrong_level}) / میانگین ۳روز</td><td>${s.powerStrongDays} روز | ${Number.isFinite(s.powerLast3Avg)?s.powerLast3Avg.toFixed(2):'—'}</td><td>${h.powerFrac?'✅':'❌'}</td></tr>
+            <tr><td>ورود پول ۳روز ≥ 0</td><td>${fmtNum(s.inflowLast3Sum)}</td><td>${h.inflow3?'✅':'❌'}</td></tr>
+            <tr><td>Vol Thrust (v/vol20)</td><td>≥ ${CFG.thresholds.volThrust_ratio_min}</td><td>${h.volThrust?'✅':'❌'}</td></tr>
+            <tr><td>فاصله تا سقف ۶۰روزه</td><td>${fmtPct(res.stats.distTo60High)}</td><td>${h.distHigh?'✅':'❌'}</td></tr>
+            <tr><td>Breakout 60d</td><td>${s.isBreakout60?'Breakout':''}</td><td>${h.breakout60?'✅':'❌'}</td></tr>
+            <tr><td>WRB (امروز/دیروز)</td><td>${h.wrb?'فعال':''}</td><td>${h.wrb?'✅':'❌'}</td></tr>
+            <tr><td>RSI Divergence</td><td>${Number.isFinite(res.data[res.lastIdx].rsi)?res.data[res.lastIdx].rsi.toFixed(2):'—'}</td><td>${h.rsiDiv?'✅':'❌'}</td></tr>
+            <tr><td>Closing Strength (10d)</td><td>${Number.isFinite(s.closingPct)?fmtPct(s.closingPct):'—'}</td><td>${h.closingStrength?'✅':'❌'}</td></tr>
+            <tr><td>Pocket Pivot (10d)</td><td>${h.pocketPivot?'وجود دارد':''}</td><td>${h.pocketPivot?'✅':'❌'}</td></tr>
+            <tr><td>NR7/Inside/Tight</td><td>${(s.isNR7?'NR7 ':'')+(s.insideCluster?'Inside ':'')+(s.threeWeeksT?'3wTight':'')}</td><td>${h.nr7_or_inside?'✅':'❌'}</td></tr>
+          </tbody>
+        </table>
+
+        ${caTable}
+        ${btHtml}
+
+        <!-- باکس ML امروز اینجا بعد از آموزش تزریق می‌شود -->
+        <div class="advice ml-box" style="display:none"></div>
+      </div></div>
+    `;
+    return div;
+  }
+
+  // ====== مرتب‌سازی نتایج بر اساس (Score → Discovery → Continuation) ======
+  function sortResultsByPriority(){
+    const nodes = Array.from(resultsEl.children);
+    const sortable = nodes.filter(el => el.classList.contains('card') && el.dataset && el.dataset.score!==undefined);
+    const others   = nodes.filter(el => !sortable.includes(el));
+    sortable.sort((a,b)=>{
+      const sa = parseFloat(a.dataset.score)||0;
+      const sb = parseFloat(b.dataset.score)||0;
+      if(sb!==sa) return sb-sa;
+      const da = parseFloat(a.dataset.pdisc)||0;
+      const db = parseFloat(b.dataset.pdisc)||0;
+      if(db!==da) return db-da;
+      const ca = parseFloat(a.dataset.pcont)||0;
+      const cb = parseFloat(b.dataset.pcont)||0;
+      if(cb!==ca) return cb-ca;
+      // تساوی کامل: رتبه یا نام
+      const ra = parseFloat(a.dataset.rank)||0;
+      const rb = parseFloat(b.dataset.rank)||0;
+      if(rb!==ra) return rb-ra;
+      const na = a.dataset.name||'';
+      const nb = b.dataset.name||'';
+      return na.localeCompare(nb,'fa');
+    });
+    resultsEl.innerHTML='';
+    sortable.forEach(el=>resultsEl.appendChild(el));
+    others.forEach(el=>resultsEl.appendChild(el));
+    logStatus('مرتب‌سازی نتایج: امتیاز هسته → احتمال کشف → احتمال تداوم','ok');
+  }
+
+  function appendMonitorToCard(name, monRes, params){
+    let host = APP.cards[name];
+    if(!host){
+      host = document.createElement('div'); host.className='card';
+      host.innerHTML = `<div class="chip warn">هشدار: کارت ${name} پیدا نشد؛ نتایج پایش به‌صورت جداگانه نمایش داده می‌شود.</div>`;
+      resultsEl.prepend(host);
+    }
+    const block = document.createElement('div');
+    block.className = 'advice';
+    if(monRes.found){
+      block.innerHTML = `
+        <h3>نتیجهٔ پایش/بک‌تست «نخستین ورود»</h3>
+        <ul>
+          <li><b>پارامترها:</b> کشف ≥ ${params.thrDisc}%، تداوم ≥ ${params.thrCont}%، ارزیابی ${params.monDays} روز، تارگت ${params.monTarget}%، از تاریخ ${params.monStartDate||'—'}.</li>
+          <li><b>نخستین ورود (مشروط):</b> تاریخ ${monRes.entryDate} | قیمت ورود ${fmtNum(Math.round(monRes.entryPrice))} | کشف ${monRes.prob_discovery}% | تداوم ${monRes.prob_continuation}%</li>
+        </ul>
+        <table class="tbl">
+          <thead><tr><th>Hit Target</th><th>Days to Target</th><th>Max Return (closes)</th><th>Max Drop from Entry (Low)</th><th>Window</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>${monRes.hit?'✅':'❌'}</td>
+              <td>${monRes.hit? monRes.daysToTarget+' روز':'—'}</td>
+              <td>${fmtPct(monRes.maxReturn)}</td>
+              <td>${fmtPct(monRes.maxDropFromEntry)}</td>
+              <td>${monRes.windowDays} روز</td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+    }else{
+      block.innerHTML = `
+        <h3>نتیجهٔ پایش/بک‌تست «نخستین ورود»</h3>
+        <ul>
+          <li><b>پارامترها:</b> کشف ≥ ${params.thrDisc}%، تداوم ≥ ${params.thrCont}%، ارزیابی ${params.monDays} روز، تارگت ${params.monTarget}%، از تاریخ ${params.monStartDate||'—'}.</li>
+          <li class="chip warn">هیچ روزی بعد از تاریخ شروع، همزمان به آستانه‌های ورود نرسید ${monRes.reason?('('+monRes.reason+')'):''}.</li>
+        </ul>
+      `;
+    }
+    host.appendChild(block);
+  }
+
+  function appendMultiMonitorToCard(name, multiRes, params){
+    let host = APP.cards[name];
+    if(!host){
+      host = document.createElement('div'); host.className='card';
+      host.innerHTML = `<div class="chip warn">هشدار: کارت ${name} پیدا نشد؛ نتایج پایش چند-نوبته به‌صورت جداگانه نمایش داده می‌شود.</div>`;
+      resultsEl.prepend(host);
+    }
+    const block = document.createElement('div');
+    block.className = 'advice';
+
+    const rowsHtml = multiRes.entries.map((e,idx)=>`
+      <tr>
+        <td>${idx+1}</td>
+        <td>${e.entryDate}</td>
+        <td>${fmtNum(Math.round(e.entryPrice))}</td>
+        <td>${e.prob_discovery}% / ${e.prob_continuation}%</td>
+        <td>${e.windowDays}</td>
+        <td>${e.hit?'✅':'❌'}</td>
+        <td>${e.hit? (e.daysToTarget+' روز') : '—'}</td>
+        <td>${fmtPct(e.maxReturn)}</td>
+        <td>${fmtPct(e.maxDropFromEntry)}</td>
+      </tr>
+    `).join('');
+
+    const s=multiRes.summary||{};
+    block.innerHTML = `
+      <h3>نتیجهٔ پایش/بک‌تست «چند-نوبته»</h3>
+      <ul>
+        <li><b>پارامترها:</b> از تاریخ ${params.monStartDate||'—'}؛ کشف ≥ ${params.thrDisc}%؛ تداوم ≥ ${params.thrCont}%؛ ارزیابی ${params.monDays} روز؛ تارگت ${params.monTarget}%؛ <b>فاصلهٔ باز-پایش = ${params.rescanDays} روز</b>.</li>
+        <li><b>خلاصه:</b> مجموع ورودها: ${s.total||0} | بردها: ${s.wins||0} | نرخ برد: ${s.total? (Math.round(s.winRate*100)+'%'):'—'} | میانگینِ بیشینهٔ بازده: ${Number.isFinite(s.avgMaxRet)?fmtPct(s.avgMaxRet):'—'} | میانگین بیشینهٔ افت: ${Number.isFinite(s.avgMaxDD)?fmtPct(s.avgMaxDD):'—'} | میانهٔ روز تا تارگت(بردها): ${s.medDaysToTarget??'—'}</li>
+      </ul>
+      <table class="tbl">
+        <thead>
+          <tr><th>#</th><th>تاریخ ورود</th><th>قیمت ورود</th><th>کشف/تداوم</th><th>Window</th><th>Hit</th><th>Days→Target</th><th>MaxReturn</th><th>MaxDrop</th></tr>
+        </thead>
+        <tbody>${rowsHtml || '<tr><td colspan="9">موردی یافت نشد.</td></tr>'}</tbody>
+      </table>
+    `;
+    host.appendChild(block);
+  }
+
+  // ====== File I/O ======
+  function logStatus(msg, cls=''){ statusEl.textContent='وضعیت: '+msg; statusEl.className='log '+cls; }
+  function updateActionButtonsEnabled(){
+    const hasIndex = !!APP.indexData;
+    const hasAnyInstrument = (APP.stocks && APP.stocks.length>0);
+    // برای نمایش/پایش/ML حداقل «شاخص کل» + یک ابزار لازم است
+    const enableActions = hasIndex && hasAnyInstrument;
+    runMonitorBtn.disabled = !enableActions;
+    runMultiMonitorBtn.disabled = !enableActions;
+    mlTrainBtn.disabled = !enableActions;
+    clearBtn.disabled = !(hasIndex || hasAnyInstrument);
+  }
+
+  async function parseFile(file){
+    const parseCsvText=(text)=>{
+      const lines=text.split(/\r?\n/).filter(x=>x.trim().length); if(lines.length<2) return [];
+      const parseLine=line=>{ const out=[]; let cur='',inQ=false; for(let i=0;i<line.length;i++){ const ch=line[i],nxt=line[i+1]; if(ch==='"'){ if(inQ&&nxt==='"'){cur+='"';i++;} else inQ=!inQ; } else if(ch===','&&!inQ){ out.push(cur); cur=''; } else cur+=ch; } out.push(cur); return out; };
+      const headers=parseLine(lines[0]).map(h=>normalizeStr(h)); const rows=[];
+      for(let i=1;i<lines.length;i++){ const vals=parseLine(lines[i]); const obj={}; headers.forEach((h,idx)=>obj[h]=vals[idx]??""); rows.push(obj); }
+      return rows;
+    };
+    const lower=file.name.toLowerCase();
+    if(lower.endsWith('.csv')){ const txt=await file.text(); return parseCsvText(txt); }
+    else if(lower.endsWith('.xlsx')){ if(!window.XLSX&& !APP.isXlsxReady) throw new Error('کتابخانه XLSX بارگذاری نشده است.');
+      const ab=await file.arrayBuffer(); const wb=XLSX.read(ab,{type:'array'}); const ws=wb.Sheets[wb.SheetNames[0]]; return XLSX.utils.sheet_to_json(ws,{defval:"",raw:true}); }
+    else throw new Error('فرمت پشتیبانی نمی‌شود. فقط CSV/XLSX.');
+  }
+
+  async function handleIndexFile(file){
+    if(!file) return;
+    try{
+      logStatus(`در حال پردازش شاخص: ${file.name}...`);
+      const rows=await parseFile(file);
+      APP.indexData=parseData(rows,'index');
+      APP.regime = computeRegime(APP.indexData);
+      renderRegime();
+
+      // فعال‌سازی ورودی‌های ابزار پس از شاخص کل
+      stockFileInput.disabled=false;
+      fundFileInput.disabled=false;
+      goldFileInput.disabled=false;
+
+      updateActionButtonsEnabled();
+      logStatus(`شاخص کل بارگذاری شد (${APP.indexData.length} روز).`, 'ok');
+    }catch(e){
+      APP.indexData=null;
+      stockFileInput.disabled=true;
+      fundFileInput.disabled=true;
+      goldFileInput.disabled=true;
+      updateActionButtonsEnabled();
+      logStatus(`خطا در شاخص: ${e.message}`,'bad');
+    }
+  }
+
+  async function handleSectorFile(file){
+    if(!file){ APP.sectorData=null; return; }
+    try{
+      const rows=await parseFile(file);
+      APP.sectorData=parseData(rows,'sector');
+      logStatus(`شاخص صنعت بارگذاری شد (${APP.sectorData.length} روز).`,'ok');
+    }catch(e){ APP.sectorData=null; logStatus(`خطا در شاخص صنعت: ${e.message}`,'bad'); }
+  }
+
+  async function pushInstrumentAndRender(file, kindLabel, kindParse){
+    if(!APP.indexData){ logStatus('اول شاخص کل را انتخاب کنید.','warn'); return; }
+    const testDate = normalizeStr(testDateEl.value||"");
+    const caOpts = getCAOptionsFromUI();
+
+    try{
+      logStatus(`خواندن ${kindLabel} — ${file.name}...`);
+      const rows=await parseFile(file);
+      const stockFull=parseData(rows, kindParse); // 'stock' | 'fund' | 'gold'
+      const ca = adjustForCorporateActions(stockFull, caOpts);
+      const stockAdj = ca.adjusted;
+      const idxExist = APP.stocks.findIndex(s=>s.name===`${kindLabel} — ${file.name}`);
+      if(idxExist>=0) APP.stocks.splice(idxExist,1);
+      APP.stocks.push({ name:`${kindLabel} — ${file.name}`, data:stockAdj, caEvents: ca.events });
+
+      const res=analyze(stockAdj, APP.indexData, APP.sectorData, testDate||null);
+      const btRes = (btToggle.value==='on' && testDate)? backtestForward(stockAdj, testDate) : null;
+      const card=cardFor(`${kindLabel} — ${file.name}`,res,btRes, {events:ca.events}); 
+      resultsEl.prepend(card);
+      APP.cards[`${kindLabel} — ${file.name}`] = card;
+
+      updateActionButtonsEnabled();
+      logStatus(`تحلیل ${kindLabel} — ${file.name} کامل شد. ${ca.events.length?('— رویداد تعدیل: '+ca.events.length+' مورد'):''}`,'ok');
+    }catch(e){
+      const err=document.createElement('div'); err.className='card';
+      err.innerHTML=`<div class="chip bad"><b>خطا در ${kindLabel} — ${file.name}:</b> ${e.message}</div>`;
+      resultsEl.prepend(err);
+      logStatus(`خطا: ${e.message}`,'bad');
+    }
+  }
+
+  async function handleStockFiles(files){
+    for(const file of Array.from(files)){
+      await pushInstrumentAndRender(file, 'سهم', 'stock');
+    }
+    // پس از اتمام بارگذاری همهٔ فایل‌های سهام، مرتب‌سازی انجام شود
+    sortResultsByPriority();
+  }
+  async function handleFundFiles(files){
+    for(const file of Array.from(files)){
+      await pushInstrumentAndRender(file, 'صندوق', 'fund');
+    }
+    // پس از اتمام بارگذاری همهٔ فایل‌های صندوق، مرتب‌سازی انجام شود
+    sortResultsByPriority();
+  }
+  async function handleGoldFiles(files){
+    for(const file of Array.from(files)){
+      await pushInstrumentAndRender(file, 'صندوق طلا', 'gold');
+    }
+    // پس از اتمام بارگذاری همهٔ فایل‌های طلا، مرتب‌سازی انجام شود
+    sortResultsByPriority();
+  }
+
+  // ====== ML: Features, Train, Predict ======
+  function featuresFromAnalyze(res){
+    const s=res.stats;
+    const f = [
+      res.hits.rs?1:0,
+      res.hits.rsHH60?1:0,
+      res.hits.rsSlope?1:0,
+      res.hits.rsSector?1:0,
+      Number.isFinite(res.cv20[res.lastIdx]) ? res.cv20[res.lastIdx] : 0,
+      res.hits.maCross?1:0,
+      Number.isFinite(s.powerLast3Avg) ? s.powerLast3Avg : 0,
+      Number.isFinite(s.powerStrongDays) ? s.powerStrongDays : 0,
+      Number.isFinite(s.inflowLast3Sum) ? s.inflowLast3Sum : 0,
+      res.hits.volThrust?1:0,
+      Number.isFinite(s.distTo60High) ? s.distTo60High : 0,
+      s.isBreakout60?1:0,
+      res.hits.wrb?1:0,
+      res.hits.rsiDiv?1:0,
+      res.hits.pocketPivot?1:0,
+      res.hits.closingStrength?1:0,
+      Number.isFinite(res.ticksA)?res.ticksA:0,
+      Number.isFinite(res.ticksB)?res.ticksB:0,
+      Number.isFinite(res.score)?(res.score/ MAX_SCORE()):0
+    ];
+    return f;
+  }
+  function standardizeFit(X){
+    const d=X[0].length;
+    const mu=new Array(d).fill(0), sd=new Array(d).fill(1);
+    for(let j=0;j<d;j++){
+      const col=X.map(r=>r[j]).filter(Number.isFinite);
+      const m=mean(col); const s=stdev(col); mu[j]=Number.isFinite(m)?m:0; sd[j]= (Number.isFinite(s)&&s>1e-8)?s:1;
+    }
+    const Z = X.map(r=>r.map((v,j)=>(v-mu[j])/sd[j]));
+    return {Z, mu, sd};
+  }
+  const sigmoid = z => 1/(1+Math.exp(-z));
+  function trainLogRegWeighted(X, y, sampleW, epochs=300, lr=0.1, l2=1e-4){
+    const n=X.length, d=X[0].length;
+    let w=new Array(d).fill(0), b=0;
+    for(let ep=0; ep<epochs; ep++){
+      const gradW=new Array(d).fill(0); let gradB=0;
+      for(let i=0;i<n;i++){
+        let z=b; const xi=X[i];
+        for(let j=0;j<d;j++) z += w[j]*xi[j];
+        const p=sigmoid(z);
+        const e=p - y[i];
+        const sw = sampleW[i] || 1;
+        for(let j=0;j<d;j++) gradW[j] += sw*e*xi[j];
+        gradB += sw*e;
+      }
+      for(let j=0;j<d;j++){ gradW[j]=gradW[j]/n + l2*w[j]; }
+      gradB /= n;
+      for(let j=0;j<d;j++) w[j] -= lr*gradW[j];
+      b -= lr*gradB;
+      if(ep===150) lr*=0.5;
+      if(ep===250) lr*=0.5;
+    }
+    return {w,b};
+  }
+  function aucScore(y, p){
+    const n=y.length; const pairs = y.map((yy,i)=>({y:yy,p:p[i]})).sort((a,b)=>b.p-a.p);
+    let pos=0, neg=0; for(const v of y){ if(v===1)pos++; else neg++; }
+    if(pos===0||neg===0) return 0.5;
+    let tp=0, fp=0, tpPrev=0, fpPrev=0, prev=Infinity, area=0;
+    for(const r of pairs){
+      if(r.p!==prev){ area += (fp - fpPrev) * (tp + tpPrev) / 2; prev=r.p; fpPrev=fp; tpPrev=tp; }
+      if(r.y===1) tp++; else fp++;
+    }
+    area += (fp - fpPrev) * (tp + tpPrev) / 2;
+    return area/(pos*neg);
+  }
+  function accuracyAt(y, p, thr=0.5){
+    let ok=0; for(let i=0;i<y.length;i++){ const h = p[i]>=thr?1:0; if(h===y[i]) ok++; }
+    return y.length? ok/y.length : 0;
+  }
+  function winRateAbove(y, p, thr=0.7){
+    const idx=p.map((v,i)=>({v,i})).filter(o=>o.v>=thr).map(o=>o.i);
+    if(!idx.length) return NaN;
+    const wins = idx.filter(i=>y[i]===1).length;
+    return wins/idx.length;
+  }
+
+  async function trainML(){
+    if(!APP.indexData){
+      mlStatus.className='log warn';
+      mlStatus.textContent = 'وضعیت ML: ابتدا فایل شاخص کل را بارگذاری کنید.';
+      return;
+    }
+    if(!APP.stocks.length){
+      mlStatus.className='log warn';
+      mlStatus.textContent = 'وضعیت ML: حداقل یک ابزار (سهم/صندوق) لازم است.';
+      return;
+    }
+    mlStatus.className='log';
+    mlStatus.textContent = 'شروع یادگیری… (الگوهای گذشته با پیش‌فیلتر کشف≥70 و تداوم≥60)';
+
+    const discMin = BASE_CFG.ml.disc_min;
+    const contMin = BASE_CFG.ml.cont_min;
+    const fwdDays = BASE_CFG.ml.fwd_days;
+    const targetPct = BASE_CFG.ml.target_pct/100;
+
+    const X=[], y=[], sw=[];
+    for(const s of APP.stocks){
+      const data = s.data;
+      for(let i=BASE_CFG.lookback60; i<data.length - fwdDays; i++){
+        const dateStr = data[i].d;
+        let res;
+        try { res = analyze(data, APP.indexData, APP.sectorData, dateStr); }
+        catch(e){ continue; }
+        if(res.prob_discovery>=discMin && res.prob_continuation>=contMin){
+          const entry = data[i].c;
+          const end = Math.min(data.length-1, i+fwdDays);
+          const maxRet = Math.max(...data.slice(i,end+1).map(d=>d.c/entry - 1));
+          const label = (maxRet >= targetPct) ? 1 : 0;
+          X.push(featuresFromAnalyze(res));
+          y.push(label);
+        }
+      }
+    }
+    if(X.length<20){
+      APP.ML=null;
+      mlStatus.className='log warn';
+      mlStatus.textContent = 'نمونه‌های آموزشی کافی نیست (کمتر از 20).';
+      return;
+    }
+
+    const pos = y.filter(v=>v===1).length;
+    const neg = y.length - pos;
+    const posW = pos>0 ? (y.length/(2*pos)) : 1;
+    const negW = neg>0 ? (y.length/(2*neg)) : 1;
+    for(const v of y){ sw.push(v===1?posW:negW); }
+
+    const {Z, mu, sd} = standardizeFit(X);
+    const {w,b} = trainLogRegWeighted(Z, y, sw, 320, 0.12, 1e-4);
+    const pTrain = Z.map(z=> sigmoid( z.reduce((acc,zz,idx)=>acc + w[idx]*zz, b) ));
+    const AUC = aucScore(y, pTrain);
+    const ACC = accuracyAt(y, pTrain, 0.5);
+    const WR70 = winRateAbove(y, pTrain, 0.7);
+
+    APP.ML = {w,b,mu,sd, auc:AUC, acc:ACC, wr70:WR70, counts:{n:y.length,pos,neg, wpos:posW, wneg:negW}, pMap:{}};
+
+    mlStatus.className='log ok';
+    mlStatus.textContent =
+`شروع یادگیری ماشین لرنینگ
+— یادگیری از الگوهای گذشته برای پیش‌بینی «Hit +20% طی ${fwdDays} روز» (فقط روزهای با کشف≥${discMin} و تداوم≥${contMin} وارد آموزش می‌شوند).
+آموزش کامل شد: n=${y.length}, +1=${pos}, -1=${neg}, وزن‌مثبت≈${posW.toFixed(2)}
+AUC≈${(AUC*100).toFixed(1)}%
+Acc@0.5≈${(ACC*100).toFixed(1)}%
+WinRate@p≥0.7≈${Number.isFinite(WR70)?(WR70*100).toFixed(1)+'%':'—'}
+هدف: +${BASE_CFG.ml.target_pct}% در ${BASE_CFG.ml.fwd_days}روز`;
+
+    // پیش‌بینی «امروز» برای هر ابزار
+    for(const s of APP.stocks){
+      try{
+        const todayRes = analyze(s.data, APP.indexData, APP.sectorData, null);
+        const fv = featuresFromAnalyze(todayRes);
+        const z = fv.map((v,j)=>(v-APP.ML.mu[j])/APP.ML.sd[j]);
+        const p = sigmoid( z.reduce((acc,zz,idx)=>acc + APP.ML.w[idx]*zz, APP.ML.b) );
+        APP.ML.pMap[s.name] = p;
+
+        const card = APP.cards[s.name];
+        if(card){
+          const headerChips = card.querySelector('.chips');
+          if(headerChips && !headerChips.querySelector('.ml-prob-chip')){
+            const span = document.createElement('span');
+            span.className='chip info ml-prob-chip';
+            span.innerHTML = `ML p(hit@60d): <b>${Math.round(p*100)}%</b>`;
+            headerChips.prepend(span);
+          }else if(headerChips){
+            const chip = headerChips.querySelector('.ml-prob-chip');
+            chip.innerHTML = `ML p(hit@60d): <b>${Math.round(p*100)}%</b>`;
+          }
+
+          const mlBox = card.querySelector('.ml-box');
+          if(mlBox){
+            const tier = p>=0.8?'A+': (p>=0.7?'A':'B/Watch');
+            const action = p>=0.7
+              ? 'ورود مشروط: شکست سقف ۶۰روزه یا WRB صعودی + قدرت ≥1.5 + حجم ۳/۲۰ ≥1.2'
+              : 'واچ‌لیست: منتظر تریگر قوی یا بهبود RS و حجم بمان';
+            mlBox.style.display='';
+            mlBox.innerHTML = `
+              <h3>پیش‌بینی ML (امروز)</h3>
+              <ul>
+                <li>تاریخ: <b>${todayRes.data[todayRes.lastIdx].d}</b></li>
+                <li>احتمال رسیدن به <b>+${BASE_CFG.ml.target_pct}%</b> طی <b>${BASE_CFG.ml.fwd_days}</b> روز: <b>${(p*100).toFixed(1)}%</b> <span class="chip info">Tier: <b>${tier}</b></span></li>
+                <li>پیشنهاد اجرایی: <b>${action}</b></li>
+                <li class="muted">نکته: «امروز» یعنی آخرین روز موجود در فایل داده.</li>
+              </ul>
+            `;
+          }
+        }
+      }catch(e){ /* ignore per-stock errors */ }
+    }
+  }
+
+  // ====== Events ======
+  indexFileInput.addEventListener('change', e=>handleIndexFile(e.target.files[0]));
+  sectorFileInput.addEventListener('change', e=>handleSectorFile(e.target.files[0]));
+  stockFileInput.addEventListener('change', e=>handleStockFiles(e.target.files));
+  fundFileInput.addEventListener('change',  e=>handleFundFiles(e.target.files));
+  goldFileInput.addEventListener('change',  e=>handleGoldFiles(e.target.files));
+
+  clearBtn.addEventListener('click', ()=>{
+    resultsEl.innerHTML=''; APP.stocks=[]; APP.cards=Object.create(null); APP.ML=null;
+    mlStatus.className='log'; mlStatus.textContent='وضعیت ML: منتظر بارگذاری شاخص و حداقل یک ابزار (سهم/صندوق)…';
+    updateActionButtonsEnabled();
+    logStatus('نتایج پاک شد.');
+  });
+
+  drop.addEventListener('dragover', e=>{ e.preventDefault(); if(!stockFileInput.disabled) drop.classList.add('drag'); });
+  drop.addEventListener('dragenter', e=>{ e.preventDefault(); if(!stockFileInput.disabled) drop.classList.add('drag'); });
+  drop.addEventListener('dragleave', e=>{ e.preventDefault(); drop.classList.remove('drag'); });
+  // پیش‌فرض: فایل‌های رها شده را به عنوان «سهام» می‌خوانیم (در صورت نیاز می‌توان دسته‌بندی هوشمند اضافه کرد)
+  drop.addEventListener('drop', e=>{ e.preventDefault(); drop.classList.remove('drag'); if(e.dataTransfer.files.length) handleStockFiles(e.dataTransfer.files); });
+
+  resultsEl.addEventListener('click', e=>{
+    const btn=e.target.closest('.btn-toggle'); if(!btn) return;
+    const card=btn.closest('.card'); card.classList.toggle('open');
+    btn.textContent=card.classList.contains('open')?'پنهان‌کردن جزئیات':'نمایش جزئیات';
+  });
+
+  profileSelect.addEventListener('change', ()=>applyProfile());
+
+  runMonitorBtn.addEventListener('click', ()=>{
+    if(!APP.indexData){ logStatus('ابتدا شاخص کل را بارگذاری کن.','warn'); return; }
+    if(!APP.stocks.length){ logStatus('هیچ ابزار (سهم/صندوق) بارگذاری نشده است.','warn'); return; }
+    const params = {
+      monStartDate: normalizeStr(monStartDateEl.value||''),
+      thrDisc: Number(thrDiscEl.value)||80,
+      thrCont: Number(thrContEl.value)||80,
+      monDays: Math.max(1, Number(monDaysEl.value)||30),
+      monTarget: Number(monTargetEl.value)||20
+    };
+    for(const s of APP.stocks){
+      const mon = monitorBacktest(s.data, APP.indexData, APP.sectorData, params.monStartDate, params.thrDisc, params.thrCont, params.monDays, params.monTarget);
+      appendMonitorToCard(s.name, mon, params);
+    }
+    logStatus('پایش/بک‌تست «نخستین ورود» برای همهٔ ابزارهای بارگذاری‌شده انجام شد.','ok');
+  });
+
+  runMultiMonitorBtn.addEventListener('click', ()=>{
+    if(!APP.indexData){ logStatus('ابتدا شاخص کل را بارگذاری کن.','warn'); return; }
+    if(!APP.stocks.length){ logStatus('هیچ ابزار (سهم/صندوق) بارگذاری نشده است.','warn'); return; }
+    const params = {
+      monStartDate: normalizeStr(monStartDateEl.value||''),
+      thrDisc: Number(thrDiscEl.value)||80,
+      thrCont: Number(thrContEl.value)||80,
+      monDays: Math.max(1, Number(monDaysEl.value)||30),
+      monTarget: Number(monTargetEl.value)||20,
+      rescanDays: Math.max(1, Number(rescanDaysEl.value)||10)
+    };
+    for(const s of APP.stocks){
+      const multi = monitorBacktestMulti(s.data, APP.indexData, APP.sectorData, params.monStartDate, params.thrDisc, params.thrCont, params.monDays, params.monTarget, params.rescanDays);
+      appendMultiMonitorToCard(s.name, multi, params);
+    }
+    logStatus('پایش/بک‌تست «چند-نوبته» برای همهٔ ابزارها انجام شد.','ok');
+  });
+
+  mlTrainBtn.addEventListener('click', trainML);
+
+  window.addEventListener('xlsx-ready', ()=>{ APP.isXlsxReady=true; });
+  window.addEventListener('xlsx-missing', ()=>{ console.warn('XLSX یافت نشد: فقط CSV پشتیبانی می‌شود.'); });
+  </script>
+</body>
+</html>
