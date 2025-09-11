@@ -2,7 +2,8 @@ name: Daily Ingest (13:00 Tehran)
 
 on:
   schedule:
-    - cron: '30 9 * * *'   # 09:30 UTC = 13:00 Tehran
+    # شنبه تا چهارشنبهٔ تهران (Sat=6, Sun=0, Mon=1, Tue=2, Wed=3) در UTC
+    - cron: '30 9 * * 0-3,6'   # 09:30 UTC = 13:00 Asia/Tehran
   workflow_dispatch:
 
 jobs:
