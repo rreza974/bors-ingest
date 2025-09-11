@@ -1,0 +1,12 @@
+services:
+  - type: cron
+    name: bors-daily-1300
+    schedule: "30 9 * * *"        # 09:30 UTC = ساعت 13:00 تهران
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python daily_ingest_1300.py
+    envVars:
+      - key: TOKEN        # توکن ChartAPI را بعداً در Render به‌صورت Secret می‌گذاری
+        sync: false
+      - key: MONGO_URI    # اتصال MongoDB را بعداً در Render به‌صورت Secret می‌گذاری
+        sync: false
