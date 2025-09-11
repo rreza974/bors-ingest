@@ -25,3 +25,19 @@ jobs:
           TOKEN: ${{ secrets.TOKEN }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
         run: python daily_ingest_1300.py
+
+      - name: Verify write (count today in Tehran)
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+        run: |
+          python - <<'PY'
+          from datetime import datetime, timedelta, timezone
+          from pymongo import MongoClient
+          tehran = timezone(timedelta(hours=3, minutes=30))
+          today = datetime.now(tehran).strftime("%Y-%m-%d")
+          client = MongoClient("${{ secrets.MONGO_URI }}")
+          col = client["bors"]["daily_50cols"]
+          cnt = col.count_documents({"تاریخ": today})
+          print(f"Tehran today = {today} | inserted docs = {cnt}")
+          client.close()
+          PY
